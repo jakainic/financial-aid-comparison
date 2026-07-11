@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Will College Really Cost? — Financial Aid Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #22304a;
+    --ink-soft: #4d5a72;
+    --paper: #f4f6f2;
+    --card: #ffffff;
+    --line: #d9ded4;
+    --grant: #1e7a46;
+    --grant-bg: #e9f4ec;
+    --loan: #a05e12;
+    --loan-bg: #faf0e0;
+    --work: #35618e;
+    --work-bg: #e9f0f7;
+    --hl: #ffe14d;
+    --danger: #b3392f;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+  body {
+    font-family: "Public Sans", system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- Header ---------- */
+  header { padding: 48px 0 36px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--work);
+  }
+  h1 {
+    font-family: "Bitter", Georgia, serif;
+    font-weight: 800; font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.12; margin: 10px 0 14px; max-width: 22ch;
+  }
+  h1 .hl-sweep {
+    background: linear-gradient(104deg, transparent 0.5%, var(--hl) 3%, var(--hl) 97%, transparent 99.5%);
+    padding: 0 6px; margin: 0 -2px;
+  }
+  .lede { max-width: 60ch; color: var(--ink-soft); font-size: 17px; }
+
+  .steps {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px; margin: 28px 0 8px;
+  }
+  .step {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 14px 16px; font-size: 14px;
+  }
+  .step b { display: block; font-family: "Bitter", serif; font-size: 15px; margin-bottom: 3px; }
+  .step-grant b { color: var(--grant); }
+  .step-loan b { color: var(--loan); }
+  .step-work b { color: var(--work); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 18px 0 0; font-size: 13.5px; font-weight: 600; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+  /* ---------- View switch + save bar ---------- */
+  .control-bar {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    justify-content: space-between; margin: 34px 0 14px;
+  }
+  .view-switch { display: inline-flex; border: 1px solid var(--ink); border-radius: 9px; overflow: hidden; }
+  .view-switch button {
+    font-family: "Public Sans", sans-serif; font-weight: 700; font-size: 14px;
+    padding: 10px 16px; border: none; background: var(--card); color: var(--ink); cursor: pointer;
+  }
+  .view-switch button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  .save-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .btn {
+    font-family: "Public Sans", sans-serif; font-weight: 700; font-size: 14px;
+    border-radius: 8px; padding: 10px 16px; cursor: pointer; border: 1px solid var(--ink);
+  }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-primary:hover { background: #33456b; }
+  .btn-ghost { background: transparent; color: var(--ink); }
+  .btn-ghost:hover { background: #eaece6; }
+  .save-status { font-size: 12.5px; color: var(--ink-soft); width: 100%; text-align: right; }
+  @media (max-width: 700px) { .save-status { text-align: left; } }
+  .save-help {
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    padding: 0 16px; margin: 10px 0 0 auto; width: fit-content; max-width: 72ch;
+  }
+  .save-help[open] { width: 100%; }
+  @media (max-width: 700px) { .save-help { margin-left: 0; } }
+  .save-help summary { cursor: pointer; font-weight: 600; font-size: 14px; padding: 11px 0; }
+  .save-help p { font-size: 13.5px; color: var(--ink-soft); padding: 0 0 12px; }
+  .save-help p b { color: var(--ink); }
+
+  /* ---------- School tabs (entry view) ---------- */
+  .tabs-bar {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin: 6px 0 0; border-bottom: 2px solid var(--ink);
+  }
+  .tab {
+    font-family: "Public Sans", sans-serif; font-weight: 600; font-size: 14.5px;
+    background: var(--card); color: var(--ink-soft);
+    border: 1px solid var(--line); border-bottom: none;
+    border-radius: 8px 8px 0 0; padding: 9px 16px; cursor: pointer;
+    max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .tab:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
+    outline: 3px solid var(--work); outline-offset: 2px;
+  }
+  .tab-add {
+    background: none; border: 1px dashed var(--ink-soft); border-radius: 8px 8px 0 0;
+    color: var(--work); font-weight: 700; font-size: 14.5px; padding: 9px 14px; cursor: pointer;
+  }
+  .tab-add:hover { background: var(--work-bg); }
+
+  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; margin-top: 22px; }
+  @media (max-width: 860px) { .main-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Entry form ---------- */
+  .school-form { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .school-name-row { padding: 18px 20px 4px; display: flex; gap: 10px; align-items: center; }
+  .school-name-row input {
+    flex: 1; font-family: "Bitter", serif; font-weight: 700; font-size: 20px;
+    border: none; border-bottom: 2px dashed var(--line); padding: 4px 2px;
+    color: var(--ink); background: transparent; min-width: 0;
+  }
+  .school-name-row input::placeholder { color: #a9b0a4; font-weight: 500; }
+  .btn-remove {
+    background: none; border: 1px solid var(--line); border-radius: 7px;
+    color: var(--danger); font-size: 13px; font-weight: 600; padding: 6px 10px; cursor: pointer;
+  }
+  .btn-remove:hover { background: #fbeeed; }
+
+  fieldset { border: none; padding: 16px 20px 6px; }
+  fieldset + fieldset { border-top: 1px solid var(--line); }
+  legend {
+    font-family: "Bitter", serif; font-weight: 700; font-size: 16px;
+    padding: 16px 0 2px; float: left; width: 100%;
+  }
+  .fs-note { clear: both; font-size: 13.5px; color: var(--ink-soft); margin: 2px 0 10px; }
+  .badge {
+    display: inline-block; font-size: 11.5px;
+    font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    border-radius: 20px; padding: 2px 10px; vertical-align: 2px; margin-left: 8px;
+    font-family: "Public Sans", sans-serif;
+  }
+  .badge-grant { background: var(--grant-bg); color: var(--grant); }
+  .badge-loan { background: var(--loan-bg); color: var(--loan); }
+  .badge-work { background: var(--work-bg); color: var(--work); }
+
+  .row {
+    display: grid; grid-template-columns: 1fr 150px; gap: 12px;
+    align-items: center; padding: 7px 0; clear: both;
+  }
+  @media (max-width: 480px) { .row { grid-template-columns: 1fr 120px; } }
+  .row label { font-size: 14.5px; font-weight: 500; }
+  .hint { display: block; font-size: 12.5px; color: var(--ink-soft); font-weight: 400; }
+  .money-input { position: relative; }
+  .money-input::before {
+    content: "$"; position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    color: var(--ink-soft); font-size: 14px; pointer-events: none;
+  }
+  .money-input input {
+    width: 100%; font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: 15px;
+    text-align: right; padding: 9px 12px 9px 24px;
+    border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: #fdfdfc;
+  }
+  .money-input input:focus { border-color: var(--work); }
+
+  .subtotal-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1px dashed var(--line); margin-top: 8px; padding: 10px 0 12px;
+    font-weight: 700; font-size: 14.5px; clear: both;
+  }
+  .money { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Results panel ---------- */
+  .results {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px; position: sticky; top: 16px;
+  }
+  @media (max-width: 860px) { .results { position: static; } }
+  .results h2 { font-family: "Bitter", serif; font-size: 18px; margin-bottom: 4px; }
+  .results .for-school { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 14px; }
+  .r-line { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; font-size: 14px; border-bottom: 1px solid #eff1ec; }
+  .r-line .lbl { color: var(--ink-soft); }
+  .r-line.strong { font-weight: 700; }
+  .r-line.strong .lbl { color: var(--ink); }
+  .r-grant .money { color: var(--grant); }
+  .r-loan .money { color: var(--loan); }
+  .r-work .money { color: var(--work); }
+
+  .grand { margin: 18px -6px 6px; padding: 14px 12px 12px; border-radius: 8px; }
+  .grand .g-label { font-size: 13.5px; font-weight: 600; color: var(--ink-soft); }
+  .grand .g-num {
+    font-family: "IBM Plex Mono", monospace; font-weight: 600;
+    font-size: 30px; line-height: 1.2; display: inline-block;
+    background: linear-gradient(104deg, transparent 1%, var(--hl) 4%, var(--hl) 96%, transparent 99%);
+    padding: 1px 10px; margin: 4px -4px 2px; transform: rotate(-0.6deg);
+  }
+  .grand .g-sub { font-size: 13px; color: var(--ink-soft); }
+  .gap-note {
+    margin-top: 12px; font-size: 13.5px; padding: 12px; border-radius: 8px;
+    background: var(--work-bg); border: 1px solid #cfdcea;
+  }
+  .gap-note.gap-bad { background: #fbeeed; border-color: #ecc9c5; }
+  .gap-note b { font-family: "IBM Plex Mono", monospace; }
+  .loan-note {
+    margin-top: 10px; font-size: 13px; padding: 10px 12px; border-radius: 8px;
+    background: var(--loan-bg); border: 1px solid #ecd9bb; color: #6e440f;
+  }
+
+  /* ---------- Side-by-side table view ---------- */
+  .table-scroller {
+    overflow-x: auto; background: var(--card);
+    border: 1px solid var(--line); border-radius: var(--radius);
+    -webkit-overflow-scrolling: touch;
+  }
+  .cost-table { border-collapse: collapse; width: 100%; min-width: 560px; }
+  .cost-table th, .cost-table td {
+    padding: 8px 12px; font-size: 14px; border-bottom: 1px solid #eff1ec;
+    text-align: right; vertical-align: middle; white-space: nowrap;
+  }
+  .cost-table th:first-child, .cost-table td:first-child {
+    text-align: left; position: sticky; left: 0; background: var(--card);
+    max-width: 240px; min-width: 180px; white-space: normal;
+    border-right: 1px solid var(--line); font-weight: 500; z-index: 2;
+  }
+  .cost-table thead th {
+    background: var(--ink); color: #fff; font-family: "Bitter", serif;
+    font-size: 14px; padding: 10px 12px; position: sticky; top: 0; z-index: 3;
+  }
+  .cost-table thead th:first-child { background: var(--ink); z-index: 4; }
+  .cost-table thead input {
+    font-family: "Bitter", serif; font-weight: 700; font-size: 14px;
+    background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.5);
+    color: #fff; width: 130px; text-align: right; padding: 2px;
+  }
+  .cost-table thead input::placeholder { color: rgba(255,255,255,0.6); }
+  .col-remove {
+    display: block; margin-left: auto; margin-top: 4px; background: none; border: none;
+    color: rgba(255,255,255,0.75); font-size: 11px; cursor: pointer; text-decoration: underline;
+  }
+  .col-remove:hover { color: #fff; }
+  .t-section td {
+    background: var(--paper); font-family: "Bitter", serif; font-weight: 700;
+    font-size: 13.5px; text-align: left; padding-top: 12px;
+  }
+  .t-section td:first-child { background: var(--paper); }
+  .t-sub td { font-weight: 700; border-top: 1px dashed var(--line); }
+  .t-grant td { color: var(--grant); }
+  .t-loan td { color: var(--loan); }
+  .t-work td { color: var(--work); }
+  .t-grand td {
+    font-weight: 700; font-size: 15px; background: #fffbe6; border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+  .t-grand td:first-child { background: #fffbe6; }
+  .t-gap td { font-weight: 700; }
+  .cost-table .money-input { display: inline-block; width: 120px; }
+  .cost-table .money-input input { padding: 6px 10px 6px 22px; font-size: 14px; }
+  .table-hint { font-size: 13px; color: var(--ink-soft); margin: 10px 2px 0; }
+  .switch-note {
+    margin: 30px 0 -16px; font-size: 14.5px; color: var(--ink-soft);
+    max-width: 68ch; background: var(--card); border: 1px solid var(--line);
+    border-left: 4px solid var(--hl); border-radius: 8px; padding: 12px 16px;
+  }
+  .glossary a { color: var(--work); font-weight: 600; }
+  .cost-table th.th-add { background: var(--ink); vertical-align: middle; }
+  .btn-add-col {
+    font-family: "Public Sans", sans-serif; font-weight: 700; font-size: 13px;
+    background: transparent; color: #fff; border: 1px dashed rgba(255,255,255,0.65);
+    border-radius: 7px; padding: 7px 12px; cursor: pointer; white-space: nowrap;
+  }
+  .btn-add-col:hover { background: rgba(255,255,255,0.15); }
+  .cost-table td.td-empty { background: #fafbf8; border-left: 1px dashed var(--line); }
+
+  /* ---------- Comparison cards ---------- */
+  .compare-section { margin-top: 44px; }
+  .compare-section h2 { font-family: "Bitter", serif; font-size: 26px; margin-bottom: 6px; }
+  .compare-sub { color: var(--ink-soft); font-size: 15px; margin-bottom: 18px; max-width: 62ch; }
+  .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .c-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+  .c-card.best { border: 2px solid var(--grant); }
+  .c-card .c-rank {
+    font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--grant); margin-bottom: 2px; min-height: 16px;
+  }
+  .c-card h3 { font-family: "Bitter", serif; font-size: 17px; margin-bottom: 10px; }
+  .c-card .c-line { display: flex; justify-content: space-between; font-size: 13.5px; padding: 4px 0; }
+  .c-card .c-line .lbl { color: var(--ink-soft); }
+  .c-card .c-big {
+    border-top: 1px dashed var(--line); margin-top: 8px; padding-top: 9px;
+    font-weight: 700; font-size: 15px; display: flex; justify-content: space-between;
+  }
+
+  /* ---------- Glossary ---------- */
+  .glossary { margin-top: 48px; }
+  .glossary h2 { font-family: "Bitter", serif; font-size: 26px; margin-bottom: 14px; }
+  .glossary details {
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    margin-bottom: 8px; padding: 0 16px;
+  }
+  .glossary summary { cursor: pointer; font-weight: 600; font-size: 15px; padding: 12px 0; }
+  .glossary details p { padding: 0 0 14px; font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0 8px; }
+  footer { padding: 34px 0 46px; color: var(--ink-soft); font-size: 13.5px; max-width: 72ch; }
+
+  /* ---------- Print ---------- */
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .tabs-bar, .toolbar, .btn-remove, .tab-add, .glossary, .steps, .legend,
+    .control-bar, .col-remove { display: none !important; }
+    .main-grid { grid-template-columns: 1fr; }
+    .results { border: 1px solid #999; position: static; }
+    .grand .g-num { background: none; border: 2px solid #000; }
+    header { padding: 10px 0; }
+    .table-scroller { overflow: visible; border: none; }
+    .cost-table th, .cost-table td { white-space: normal; }
+    .cost-table thead th { background: #fff !important; color: #000; border-bottom: 2px solid #000; }
+    .cost-table thead input { color: #000; border: none; }
+    a[href]::after { content: ""; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Financial Aid Comparison Worksheet</div>
+    <h1>What will college <span class="hl-sweep">actually cost</span> your family, school by school?</h1>
+    <p class="lede">
+      Financial aid award letters can be confusing — every college structures theirs differently,
+      which makes them hard to compare. This worksheet helps families make a direct, school-by-school
+      comparison of aid and cost. It's also easy to adjust to reflect the aid the student actually
+      plans to accept. Maybe the student only wants to take out one federal loan instead of two —
+      that's fine! Just enter the aid the student plans on taking for each college, and the
+      calculator does the rest.
+    </p>
+
+    <div class="steps">
+      <div class="step"><b>1 · Add the costs</b>There are two types. <b style="display:inline;font-family:inherit;font-size:inherit">Direct costs</b> are paid to the college — tuition, housing, meal plan, fees. <b style="display:inline;font-family:inherit;font-size:inherit">Indirect costs</b> are ones you pay on your own — books, travel, clothes, shampoo. Use the numbers on each college's award letter.</div>
+      <div class="step step-grant"><b>2 · Subtract free money</b>Grants and scholarships never need to be paid back. Grants are usually based on financial need; scholarships are often based on merit. This is the best kind of aid!</div>
+      <div class="step step-loan"><b>3 · Subtract loans — carefully</b>Taking out a loan is borrowing money. It needs to be paid back, with interest. See the descriptions of each kind of loan at the bottom of this page.</div>
+      <div class="step step-work"><b>4 · Find the bottom line</b>This is what each school expects your family to pay for each year of college. Compare it with what FAFSA says your family can afford — there's often a gap between the two.</div>
+    </div>
+
+    <div class="legend" aria-hidden="true">
+      <span><span class="dot" style="background:var(--grant)"></span>Free money (grants &amp; scholarships)</span>
+      <span><span class="dot" style="background:var(--loan)"></span>Borrowed money (loans)</span>
+      <span><span class="dot" style="background:var(--work)"></span>Earned money (work-study)</span>
+    </div>
+  </header>
+
+  <p class="switch-note">
+    Enter each school's information using the form below — it will automatically appear in the
+    side-by-side comparison sheet too. You can go back and forth between the two views, adding
+    schools' financial aid information as award letters arrive. And if you decide to remove
+    something (say, you choose not to take out a loan), simply delete the number and the
+    calculator will automatically readjust your bottom line.
+  </p>
+
+  <div class="control-bar">
+    <div class="view-switch" role="group" aria-label="View">
+      <button id="viewEntry" aria-pressed="true">One school at a time</button>
+      <button id="viewTable" aria-pressed="false">All schools side by side</button>
+    </div>
+    <div class="save-tools">
+      <button class="btn btn-ghost" id="btnDownload">Save my numbers to a file</button>
+      <button class="btn btn-ghost" id="btnLoad">Open a saved file</button>
+      <input type="file" id="fileInput" accept=".json,application/json" hidden>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  </div>
+
+  <details class="save-help">
+    <summary>How does saving work? Will my numbers still be here next time?</summary>
+    <div>
+      <p><b>On this device, saving is automatic.</b> As you type, this page remembers your numbers in your web browser. Close the page and come back next week — on the same device — and everything will still be here.</p>
+      <p><b>To keep a backup, or move your work to another device,</b> click <b>“Save my numbers to a file.”</b> A small file (it will be named something like <i>my-college-costs</i> and the date) goes to your Downloads folder. You don't need to open this file, and if you do, it will look like computer code — that's normal! It's not meant to be read. Just keep it somewhere safe, or email it to yourself or a parent.</p>
+      <p><b>To pick up where you left off,</b> come back to this page, click <b>“Open a saved file,”</b> and choose that file. All of your schools and numbers will reappear.</p>
+      <p><b>Using a school or library computer?</b> Shared computers sometimes erase what pages remember, so save your numbers to a file (and email it to yourself) before you leave.</p>
+    </div>
+  </details>
+
+  <!-- Entry view -->
+  <div id="entryView">
+    <div class="tabs-bar" role="tablist" aria-label="Schools" id="tabsBar"></div>
+    <div class="main-grid">
+      <div id="formHost"></div>
+      <aside class="results" id="resultsHost" aria-live="polite"></aside>
+    </div>
+  </div>
+
+  <!-- Table view -->
+  <div id="tableView" hidden>
+    <div class="table-scroller" id="tableHost"></div>
+    <p class="table-hint">You can type directly into any cell — totals update as you go. Use “+ Add a school” at the right edge of the table (scroll sideways if you have several schools).</p>
+    <div class="toolbar" style="margin-top:12px">
+      <button class="btn btn-ghost" id="btnAddColumn">+ Add a school</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" onclick="window.print()">Print or save as PDF</button>
+    <button class="btn btn-ghost" id="btnClear">Clear this school</button>
+    <button class="btn btn-ghost" id="btnReset">Start over (erase everything)</button>
+  </div>
+
+  <section class="compare-section" id="compareSection" hidden>
+    <h2>Compare your schools</h2>
+    <p class="compare-sub">
+      The sticker price is not the real price. A school that looks twice as expensive can end up
+      costing less once aid is counted — always compare bottom lines, not tuition.
+    </p>
+    <div class="compare-grid" id="compareGrid"></div>
+  </section>
+
+  <section class="glossary">
+    <h2>What do these terms mean?</h2>
+    <details><summary>Cost of Attendance (COA)</summary><p>This is the college's estimate of the cost of one academic year at their school, which includes tuition, housing (dorm), food (a meal plan), fees, books, travel, and personal expenses. It's the starting number for the college to build each student's financial aid award.</p></details>
+    <details><summary>What determines how much your family can afford — and how much you'll pay?</summary><p>The information you provide on the FAFSA is used to determine your Student Aid Index (SAI), which will show up on your FAFSA account as a number. That number reflects what FAFSA determines your family can afford to pay for each year of college. A low SAI means your family's contribution will be relatively low; a higher SAI means a higher contribution.</p><p>All of the colleges the student has applied to will receive the student's SAI, and their financial aid offices use that number to determine how much need-based aid the student will receive. But not all financial aid awards will look the same, even though the student's SAI is constant. That's why it's important to compare the colleges' financial aid award letters!</p></details>
+    <details><summary>Direct vs. indirect costs</summary><p><b>Direct costs</b> are those the student pays directly to the college, including tuition, housing, meal plans, fees, and medical insurance if needed. Each college's direct costs are different.</p><p><b>Indirect costs</b> are those the student pays on their own, including books, school supplies, travel expenses, clothes, entertainment, and personal items like shampoo. College financial aid awards provide estimates for these costs, but use your best judgment. Some general examples:</p><p><b>Books and school supplies:</b> costs can range from $1,200–1,500 per year.</p><p><b>Travel:</b> this can be significantly impacted if air travel is required. Check flight costs to get an idea of what it will cost to go home during breaks or holidays. Otherwise, taking a bus, getting a ride and sharing gas costs, or taking a train can save money.</p><p><b>Personal expenses:</b> divide these into two categories. First, personal items such as shampoo, medication, a new winter coat or shoes. Next, spending money or an allowance for things like entertainment, pizza, snacks, and small gifts. For some students these costs could total $1,200 per year, or $600 per semester; for others, it could be more.</p></details>
+    <details><summary>Pell Grant</summary><p>This is free money from the Federal Government that helps pay for a student's cost of college attendance. The amount awarded is based on a student's financial need. The maximum Pell Grant is $7,395 (as of the 2026–27 school year) — check <a href="https://studentaid.gov/understand-aid/types/grants/pell" target="_blank" rel="noopener">studentaid.gov</a> for the current maximum. These funds can be provided to every eligible student.</p></details>
+    <details><summary>SEOG Grant</summary><p>The Supplemental Educational Opportunity Grant is also free money from the Federal Government used to help pay for the cost of college attendance, with the amount based on a student's financial need. Not all schools have access to SEOG funding, so this award may not be granted by every school even if a student has high financial need. Also, each school's total SEOG funding is limited — once the school awards all of it, they can't give out any more that year. Awards can reach as high as $4,000 per year per student.</p></details>
+    <details><summary>Grants &amp; scholarships from the school</summary><p>This is free money awarded by each college. Some is need-based and some is merit-based. Merit-based scholarships can include academic merit, athletic merit, and arts-related merit.</p></details>
+    <details><summary>Outside grants &amp; scholarships</summary><p>This is free money from such places as private foundations, funds, religious groups, and local organizations. It's important to note that such grants or scholarships are often for one year only. They may not necessarily be renewable, so it's important for the student to plan their finances accordingly.</p></details>
+    <details><summary>Subsidized vs. Unsubsidized Loans</summary><p><b>Subsidized Loan:</b> a loan to the student from the Federal Government, and often the best type of loan a student can receive. The main difference from an unsubsidized loan is that the government pays the interest on a subsidized loan while the student is in college. The student doesn't need to repay anything until 6 months after graduation, or if the student is enrolled less than half time.</p><p><b>Unsubsidized Loan:</b> also a loan from the Federal Government to the student, but the interest starts accruing when the student starts college — so it adds up over the full time the student is enrolled.</p><p>Learn more at studentaid.gov: <a href="https://studentaid.gov/understand-aid/types/loans/subsidized-unsubsidized" target="_blank" rel="noopener">interest rates and fees</a>, <a href="https://studentaid.gov/announcements-events/big-updates/definitions#loan-limits" target="_blank" rel="noopener">loan limits</a>, and <a href="https://studentaid.gov/manage-loans/repayment/plans" target="_blank" rel="noopener">repayment plans</a>.</p></details>
+    <details><summary>Other loans</summary><p>Families sometimes consider outside loans, including bank loans, loans from a college, or another Federal loan such as Parent PLUS. Interest rates on such loans can be higher than what the Federal Government offers the student through their Subsidized or Unsubsidized Loans. Families should carefully evaluate how outside loans could impact their financial health and long-term plans, including retirement. As much as parents strive to help their children, they need to be mindful of their own financial well-being. It can be more helpful for parents to assist students with such things as personal expenses or interest payments on an unsubsidized loan instead of taking out a loan themselves.</p></details>
+    <details><summary>Work-study</summary><p>Paid jobs are available on campus for students who are awarded work-study as part of their financial aid package. It's up to the student to secure a job by checking the school's student employment site and applying for jobs. If you're unsure how to go about this, speak with your college's financial aid office for guidance.</p></details>
+    <details><summary>Student Aid Index (SAI)</summary><p>This is the number that will appear on your FAFSA once it has been processed. It's calculated based on the information you provide in the FAFSA and the Federal Government's determination of what your family can afford to pay for each year of college. This SAI number is sent to all colleges the student has applied to (the student needs to input each college's information into the FAFSA for the SAI results to be shared). Each school then uses this number to determine their financial aid awards. While the SAI stays the same throughout this process, the award letters will likely all look different — which is why it's important to compare financial aid awards!</p></details>
+    <details><summary>The "gap"</summary><p>This is the difference between the SAI (what the government says your family can pay for each year of college) and what the college asks you to pay. For example, say a family has an SAI of $2,000 — the government has calculated that this family can afford $2,000 each year toward their student's college education. One school's financial aid award says the student must pay $7,500 per year, and another says $3,500. The first school "gapped" the student $5,500 per year ($7,500 − $2,000) and the second school gapped the student $1,500 per year ($3,500 − $2,000). You want to look for the smallest gaps when comparing awards!</p></details>
+  </section>
+
+  <footer>
+    <p>All numbers are per year. Use the figures from each college's official cost-of-attendance page and your own financial aid award letters. This worksheet is for planning and comparison — your financial aid office has the final word.</p>
+    <p style="margin-top:10px">Your numbers stay on your own device: this page saves them automatically in your browser as you type (nothing is sent anywhere), and “Save my numbers to a file” gives you a backup you can keep or open on another computer. See “How does saving work?” near the top of the page for details.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Field definitions (mirrors the counselor's spreadsheet) ----------
+  var SECTIONS = [
+    {
+      id: "direct", legend: "Direct costs", badge: null,
+      note: "Billed to you by the college. Find these on the school's cost-of-attendance page.",
+      fields: [
+        { id: "tuition", label: "Tuition" },
+        { id: "fees", label: "Required fees", hint: "Sometimes included in tuition — if so, leave as 0." },
+        { id: "orientation", label: "Orientation fee" },
+        { id: "housing", label: "Housing (dorm)" },
+        { id: "food", label: "Food (meal plan)" }
+      ],
+      subtotal: "Total direct costs", subKey: "direct"
+    },
+    {
+      id: "indirect", legend: "Indirect costs", badge: null,
+      note: "Expenses that don't come from the college — things you'll need to pay for throughout the school year. Each college includes estimates, but use your best judgment. For example, if you'll need airfare to get home for holidays, research what flights cost and compare with the college's estimate. You may need to adjust.",
+      fields: [
+        { id: "books", label: "Books, supplies, equipment", hint: "Estimated costs can run between $1,200\u20131,500 per year." },
+        { id: "transport", label: "Transportation", hint: "Trips home add up — flights cost more than driving." },
+        { id: "personal", label: "Personal expenses", hint: "Think of this as your semester \u201Callowance\u201D — shampoo, laundry, pizza, or a new winter coat." }
+      ],
+      subtotal: "Total indirect costs", subKey: "indirect"
+    },
+    {
+      id: "insurance", legend: "Health insurance", badge: null,
+      note: "Colleges require coverage. If you stay on a family plan, you can often waive the school's plan — enter 0.",
+      fields: [
+        { id: "healthIns", label: "School or family health plan" }
+      ],
+      subtotal: "Total cost of attendance (COA)", subKey: "coa"
+    },
+    {
+      id: "gift", legend: "Grants & scholarships", badgeClass: "badge-grant", badge: "Free money", rowClass: "t-grant",
+      note: "Never repaid. Take every dollar offered.",
+      fields: [
+        { id: "pell", label: "Federal Pell Grant" },
+        { id: "seog", label: "Federal SEOG Grant" },
+        { id: "otherGrant", label: "Other grants", hint: "State grants, community scholarships, etc." },
+        { id: "schoolGrant", label: "Grants / scholarships from this school" }
+      ],
+      subtotal: "Total free money", subKey: "gift"
+    },
+    {
+      id: "loans", legend: "Loans", badgeClass: "badge-loan", badge: "Must be repaid", rowClass: "t-loan",
+      note: "Loans may lower your bottom line for now, but they need to be repaid — with interest. See the loan descriptions at the bottom of this page.",
+      fields: [
+        { id: "subLoan", label: "Federal Subsidized Loan" },
+        { id: "unsubLoan", label: "Federal Unsubsidized Loan" },
+        { id: "otherGovLoan", label: "Other government loan" },
+        { id: "collegeLoan", label: "Loan offered by the college" }
+      ],
+      subtotal: "Total borrowed", subKey: "loans"
+    },
+    {
+      id: "work", legend: "Work-study", badgeClass: "badge-work", badge: "Must be earned", rowClass: "t-work",
+      note: "Paid jobs are available on campus for students who are awarded work-study as part of their financial aid package. It's up to the student to secure a job by checking the school's student employment site and applying. If you're unsure how, speak with your college's financial aid office for guidance.",
+      fields: [
+        { id: "workStudy", label: "Work-study award" }
+      ],
+      subtotal: null
+    },
+    {
+      id: "family", legend: "What FAFSA says you can afford", badge: null,
+      note: "Your SAI (Student Aid Index) comes from your FAFSA results. It's the same number for every school.",
+      fields: [
+        { id: "sai", label: "Your family's SAI" }
+      ],
+      subtotal: null
+    }
+  ];
+
+  var ALL_FIELDS = [];
+  SECTIONS.forEach(function (s) { s.fields.forEach(function (f) { ALL_FIELDS.push(f.id); }); });
+
+  var STORAGE_KEY = "college-cost-calculator-v1";
+
+  // ---------- State ----------
+  function blankSchool() {
+    var s = { name: "" };
+    ALL_FIELDS.forEach(function (f) { s[f] = ""; });
+    return s;
+  }
+  var schools = [blankSchool()];
+  var active = 0;
+  var view = "entry"; // 'entry' | 'table'
+  var canStore = false;
+
+  // ---------- Persistence ----------
+  // Auto-save works in normal browsers; if storage is unavailable
+  // (e.g. certain embedded previews), the tool still works — data just
+  // lives for the session, and the download button is the backup.
+  try {
+    var t = "__test__" + Date.now();
+    window.localStorage.setItem(t, "1");
+    window.localStorage.removeItem(t);
+    canStore = true;
+  } catch (e) { canStore = false; }
+
+  function persist() {
+    if (!canStore) return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ schools: schools }));
+    } catch (e) { /* storage full or blocked — ignore */ }
+    flashStatus("Saved on this device \u2713");
+  }
+  function restore() {
+    if (!canStore) return;
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (data && Array.isArray(data.schools) && data.schools.length) {
+        schools = data.schools.map(sanitizeSchool);
+      }
+    } catch (e) { /* corrupted data — start fresh */ }
+  }
+  function sanitizeSchool(obj) {
+    var s = blankSchool();
+    if (obj && typeof obj === "object") {
+      if (typeof obj.name === "string") s.name = obj.name;
+      ALL_FIELDS.forEach(function (f) {
+        if (obj[f] !== undefined && obj[f] !== null) s[f] = String(obj[f]);
+      });
+    }
+    return s;
+  }
+
+  var statusTimer = null;
+  function flashStatus(msg) {
+    var el = document.getElementById("saveStatus");
+    el.textContent = msg;
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(function () {
+      el.textContent = canStore ? "Auto-saving on this device as you type" : "Tip: use \u201CSave my numbers to a file\u201D to keep your work";
+    }, 2500);
+  }
+
+  // ---------- Helpers ----------
+  function num(v) {
+    var n = parseFloat(String(v).replace(/[,$\s]/g, ""));
+    return isNaN(n) ? 0 : n;
+  }
+  function fmt(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+  function calc(s) {
+    var direct = num(s.tuition) + num(s.fees) + num(s.orientation) + num(s.housing) + num(s.food);
+    var indirect = num(s.books) + num(s.transport) + num(s.personal);
+    var coa = direct + indirect + num(s.healthIns);
+    var gift = num(s.pell) + num(s.seog) + num(s.otherGrant) + num(s.schoolGrant);
+    var loans = num(s.subLoan) + num(s.unsubLoan) + num(s.otherGovLoan) + num(s.collegeLoan);
+    var notCovered = coa - gift - loans;
+    var grand = notCovered - num(s.workStudy);
+    var gap = grand - num(s.sai);
+    return { direct: direct, indirect: indirect, coa: coa, gift: gift, loans: loans,
+             notCovered: notCovered, grand: grand, gap: gap, sai: num(s.sai), work: num(s.workStudy) };
+  }
+  function schoolLabel(i) { return schools[i].name.trim() || "School " + (i + 1); }
+  function esc(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function changed() { persist(); }
+
+  // ---------- View switching ----------
+  function setView(v) {
+    view = v;
+    document.getElementById("viewEntry").setAttribute("aria-pressed", v === "entry" ? "true" : "false");
+    document.getElementById("viewTable").setAttribute("aria-pressed", v === "table" ? "true" : "false");
+    document.getElementById("entryView").hidden = v !== "entry";
+    document.getElementById("tableView").hidden = v !== "table";
+    renderAll();
+  }
+  document.getElementById("viewEntry").addEventListener("click", function () { setView("entry"); });
+  document.getElementById("viewTable").addEventListener("click", function () { setView("table"); });
+
+  // ---------- Render: tabs ----------
+  function renderTabs() {
+    var bar = document.getElementById("tabsBar");
+    bar.innerHTML = "";
+    schools.forEach(function (s, i) {
+      var b = document.createElement("button");
+      b.className = "tab";
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", i === active ? "true" : "false");
+      b.textContent = schoolLabel(i);
+      b.addEventListener("click", function () { active = i; renderAll(); });
+      bar.appendChild(b);
+    });
+    if (schools.length < 8) {
+      var add = document.createElement("button");
+      add.className = "tab-add";
+      add.textContent = "+ Add a school";
+      add.addEventListener("click", addSchool);
+      bar.appendChild(add);
+    }
+  }
+
+  // ---------- Render: entry form ----------
+  function renderForm() {
+    var s = schools[active];
+    var host = document.getElementById("formHost");
+    var html = '<div class="school-form"><div class="school-name-row">' +
+      '<input type="text" id="f_name" placeholder="Type the school\u2019s name\u2026" value="' + esc(s.name) + '" aria-label="School name">' +
+      (schools.length > 1 ? '<button class="btn-remove" id="btnRemove">Remove</button>' : "") +
+      "</div>";
+
+    SECTIONS.forEach(function (sec) {
+      html += "<fieldset><legend>" + sec.legend;
+      if (sec.badge) html += '<span class="badge ' + sec.badgeClass + '">' + sec.badge + "</span>";
+      html += "</legend>";
+      if (sec.note) html += '<p class="fs-note">' + sec.note + "</p>";
+      sec.fields.forEach(function (f) {
+        html += '<div class="row"><label for="f_' + f.id + '">' + f.label;
+        if (f.hint) html += '<span class="hint">' + f.hint + "</span>";
+        html += '</label><div class="money-input">' +
+          '<input type="text" inputmode="decimal" id="f_' + f.id + '" data-field="' + f.id + '" value="' + esc(s[f.id]) + '" placeholder="0">' +
+          "</div></div>";
+      });
+      if (sec.subtotal) {
+        html += '<div class="subtotal-row"><span>' + sec.subtotal + '</span><span class="money" id="sub_' + sec.id + '"></span></div>';
+      } else {
+        html += '<div style="clear:both;height:10px"></div>';
+      }
+      html += "</fieldset>";
+    });
+    html += "</div>";
+    host.innerHTML = html;
+
+    document.getElementById("f_name").addEventListener("input", function (e) {
+      schools[active].name = e.target.value;
+      changed(); renderTabs(); renderResults(); renderCompare();
+    });
+    var rm = document.getElementById("btnRemove");
+    if (rm) rm.addEventListener("click", function () {
+      if (!confirm("Remove " + schoolLabel(active) + " and its numbers?")) return;
+      schools.splice(active, 1);
+      active = Math.max(0, active - 1);
+      changed(); renderAll();
+    });
+    host.querySelectorAll("input[data-field]").forEach(function (inp) {
+      inp.addEventListener("input", function (e) {
+        schools[active][e.target.getAttribute("data-field")] = e.target.value;
+        changed(); renderSubtotals(); renderResults(); renderCompare();
+      });
+    });
+    renderSubtotals();
+  }
+
+  function renderSubtotals() {
+    var c = calc(schools[active]);
+    var map = { direct: c.direct, indirect: c.indirect, insurance: c.coa, gift: c.gift, loans: c.loans };
+    Object.keys(map).forEach(function (k) {
+      var el = document.getElementById("sub_" + k);
+      if (el) el.textContent = fmt(map[k]);
+    });
+  }
+
+  // ---------- Render: results panel ----------
+  function renderResults() {
+    var host = document.getElementById("resultsHost");
+    if (view !== "entry") return;
+    var s = schools[active];
+    var c = calc(s);
+    var gapGood = c.gap <= 0;
+    var hasNumbers = c.coa > 0;
+
+    var html = "<h2>The bottom line</h2>" +
+      '<div class="for-school">' + esc(schoolLabel(active)) + " \u00b7 per year</div>" +
+      row("Full cost of attendance", fmt(c.coa)) +
+      row("Free money (grants &amp; scholarships)", "\u2212 " + fmt(c.gift), "r-grant") +
+      row("Loans (must be repaid)", "\u2212 " + fmt(c.loans), "r-loan") +
+      row("Not covered by aid", fmt(c.notCovered), "strong") +
+      row("Work-study (must be earned)", "\u2212 " + fmt(c.work), "r-work");
+
+    html += '<div class="grand"><div class="g-label">Your family would need to come up with</div>' +
+      '<div class="g-num">' + fmt(c.grand) + '</div>' +
+      '<div class="g-sub">per year, after all aid \u2014 the number to compare between schools</div></div>';
+
+    if (hasNumbers) {
+      if (c.sai > 0 || !gapGood) {
+        html += '<div class="gap-note ' + (gapGood ? "" : "gap-bad") + '">';
+        if (gapGood) {
+          html += "Good news: this is at or below your family\u2019s SAI of <b>" + fmt(c.sai) + "</b>. According to FAFSA, this school is within what your family can afford.";
+        } else {
+          html += "FAFSA says your family can afford <b>" + fmt(c.sai) + "</b> \u2014 so there\u2019s a <b>" + fmt(c.gap) + "</b> gap this school isn\u2019t covering. That gap would need outside scholarships, extra earnings, or private loans. It\u2019s also a fair reason to appeal your aid award.";
+        }
+        html += "</div>";
+      }
+      if (c.loans > 0) {
+        html += '<div class="loan-note">Heads up: this plan includes borrowing <b class="money">' + fmt(c.loans) + "</b> this year \u2014 about <b class=\"money\">" + fmt(c.loans * 4) + "</b> over four years, before interest.</div>";
+      }
+    }
+    host.innerHTML = html;
+
+    function row(lbl, val, cls) {
+      return '<div class="r-line ' + (cls || "") + '"><span class="lbl">' + lbl + '</span><span class="money">' + val + "</span></div>";
+    }
+  }
+
+  // ---------- Render: side-by-side table ----------
+  function renderTable() {
+    if (view !== "table") return;
+    var host = document.getElementById("tableHost");
+    var n = schools.length;
+
+    var addCol = n < 8;
+    var emptyCell = addCol ? '<td class="td-empty"></td>' : "";
+    var totalCols = n + 1 + (addCol ? 1 : 0);
+
+    var html = '<table class="cost-table"><thead><tr><th>Per year</th>';
+    schools.forEach(function (s, i) {
+      html += '<th><input type="text" data-tname="' + i + '" value="' + esc(s.name) + '" placeholder="School ' + (i + 1) + '" aria-label="School ' + (i + 1) + ' name">' +
+        (n > 1 ? '<button class="col-remove" data-trem="' + i + '">remove</button>' : "") + "</th>";
+    });
+    if (addCol) html += '<th class="th-add"><button class="btn-add-col" data-taddcol>+ Add a school</button></th>';
+    html += "</tr></thead><tbody>";
+
+    SECTIONS.forEach(function (sec) {
+      html += '<tr class="t-section"><td colspan="' + totalCols + '">' + sec.legend +
+        (sec.badge ? '<span class="badge ' + sec.badgeClass + '">' + sec.badge + "</span>" : "") + "</td></tr>";
+      sec.fields.forEach(function (f) {
+        html += "<tr><td>" + f.label + "</td>";
+        schools.forEach(function (s, i) {
+          html += '<td><span class="money-input"><input type="text" inputmode="decimal" data-tfield="' + f.id + '" data-tschool="' + i + '" value="' + esc(s[f.id]) + '" placeholder="0" aria-label="' + esc(f.label + ", " + schoolLabel(i)) + '"></span></td>';
+        });
+        html += emptyCell + "</tr>";
+      });
+      if (sec.subtotal) {
+        html += '<tr class="t-sub ' + (sec.rowClass || "") + '"><td>' + sec.subtotal + "</td>";
+        schools.forEach(function (s, i) {
+          html += '<td class="money" data-tsub="' + sec.subKey + '-' + i + '"></td>';
+        });
+        html += emptyCell + "</tr>";
+      }
+    });
+
+    html += computedRow("Not covered by aid (after free money and loans)", "notCovered", "t-sub");
+    html += computedRow("FAMILY PAYS (after work-study)", "grand", "t-grand");
+    html += computedRow("Gap vs. your SAI", "gap", "t-gap");
+    html += "</tbody></table>";
+    host.innerHTML = html;
+
+    function computedRow(label, key, cls) {
+      var r = '<tr class="' + cls + '"><td>' + label + "</td>";
+      schools.forEach(function (s, i) {
+        r += '<td class="money" data-tsub="' + key + "-" + i + '"></td>';
+      });
+      return r + emptyCell + "</tr>";
+    }
+
+    var addBtn = host.querySelector("button[data-taddcol]");
+    if (addBtn) addBtn.addEventListener("click", addSchool);
+
+    host.querySelectorAll("input[data-tfield]").forEach(function (inp) {
+      inp.addEventListener("input", function (e) {
+        var i = +e.target.getAttribute("data-tschool");
+        schools[i][e.target.getAttribute("data-tfield")] = e.target.value;
+        changed(); updateTableTotals(); renderCompare();
+      });
+    });
+    host.querySelectorAll("input[data-tname]").forEach(function (inp) {
+      inp.addEventListener("input", function (e) {
+        schools[+e.target.getAttribute("data-tname")].name = e.target.value;
+        changed(); renderCompare();
+      });
+    });
+    host.querySelectorAll("button[data-trem]").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        var i = +e.target.getAttribute("data-trem");
+        if (!confirm("Remove " + schoolLabel(i) + " and its numbers?")) return;
+        schools.splice(i, 1);
+        active = Math.min(active, schools.length - 1);
+        changed(); renderAll();
+      });
+    });
+    updateTableTotals();
+  }
+
+  function updateTableTotals() {
+    schools.forEach(function (s, i) {
+      var c = calc(s);
+      var vals = { direct: c.direct, indirect: c.indirect, coa: c.coa, gift: c.gift,
+                   loans: c.loans, notCovered: c.notCovered, grand: c.grand };
+      Object.keys(vals).forEach(function (k) {
+        var el = document.querySelector('[data-tsub="' + k + "-" + i + '"]');
+        if (el) el.textContent = fmt(vals[k]);
+      });
+      var gapEl = document.querySelector('[data-tsub="gap-' + i + '"]');
+      if (gapEl) {
+        if (c.coa <= 0) { gapEl.textContent = "\u2014"; gapEl.style.color = ""; }
+        else if (c.gap > 0) { gapEl.textContent = fmt(c.gap); gapEl.style.color = "var(--danger)"; }
+        else { gapEl.textContent = "None"; gapEl.style.color = "var(--grant)"; }
+      }
+    });
+  }
+
+  // ---------- Render: comparison cards ----------
+  function renderCompare() {
+    var section = document.getElementById("compareSection");
+    var withData = schools.map(function (s, i) { return { i: i, c: calc(s) }; })
+                          .filter(function (x) { return x.c.coa > 0; });
+    if (withData.length < 2) { section.hidden = true; return; }
+    section.hidden = false;
+    withData.sort(function (a, b) { return a.c.grand - b.c.grand; });
+    var grid = document.getElementById("compareGrid");
+    grid.innerHTML = withData.map(function (x, rank) {
+      var c = x.c;
+      return '<div class="c-card' + (rank === 0 ? " best" : "") + '">' +
+        '<div class="c-rank">' + (rank === 0 ? "Lowest cost to your family" : "") + "</div>" +
+        "<h3>" + esc(schoolLabel(x.i)) + "</h3>" +
+        cLine("Sticker price (COA)", fmt(c.coa)) +
+        cLine("Free money", "\u2212 " + fmt(c.gift)) +
+        cLine("Loans", "\u2212 " + fmt(c.loans)) +
+        cLine("Work-study", "\u2212 " + fmt(c.work)) +
+        '<div class="c-big"><span>Family pays</span><span class="money">' + fmt(c.grand) + "</span></div>" +
+        '<div class="c-line"><span class="lbl">Gap vs. your SAI</span><span class="money" style="color:' + (c.gap > 0 ? "var(--danger)" : "var(--grant)") + '">' + (c.gap > 0 ? fmt(c.gap) : "None") + "</span></div>" +
+        "</div>";
+    }).join("");
+    function cLine(lbl, val) {
+      return '<div class="c-line"><span class="lbl">' + lbl + '</span><span class="money">' + val + "</span></div>";
+    }
+  }
+
+  // ---------- Download / load file ----------
+  document.getElementById("btnDownload").addEventListener("click", function () {
+    var payload = { app: "college-cost-calculator", version: 1, savedAt: new Date().toISOString(), schools: schools };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "my-college-costs-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    flashStatus("Saved! Check your Downloads folder \u2713");
+  });
+  document.getElementById("btnLoad").addEventListener("click", function () {
+    document.getElementById("fileInput").click();
+  });
+  document.getElementById("fileInput").addEventListener("change", function (e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(reader.result);
+        if (data && Array.isArray(data.schools) && data.schools.length) {
+          schools = data.schools.map(sanitizeSchool);
+          active = 0;
+          changed(); renderAll();
+          flashStatus("Loaded " + schools.length + " school" + (schools.length > 1 ? "s" : "") + " \u2713");
+        } else {
+          alert("That file doesn't look like a saved worksheet from this calculator.");
+        }
+      } catch (err) {
+        alert("Couldn't read that file. Make sure it's the .json file this calculator downloaded.");
+      }
+      e.target.value = "";
+    };
+    reader.readAsText(file);
+  });
+
+  // ---------- Add a school (shared by all views) ----------
+  function addSchool() {
+    if (schools.length >= 8) { alert("You can compare up to 8 schools."); return; }
+    schools.push(blankSchool());
+    active = schools.length - 1;
+    changed(); renderAll();
+    // Put the cursor in the new school's name box so typing can start right away
+    var target = view === "table"
+      ? document.querySelector('input[data-tname="' + (schools.length - 1) + '"]')
+      : document.getElementById("f_name");
+    if (target) target.focus();
+  }
+  document.getElementById("btnAddColumn").addEventListener("click", addSchool);
+  document.getElementById("btnClear").addEventListener("click", function () {
+    if (!confirm("Clear all numbers for " + schoolLabel(active) + "?")) return;
+    var name = schools[active].name;
+    schools[active] = blankSchool();
+    schools[active].name = name;
+    changed(); renderAll();
+  });
+  document.getElementById("btnReset").addEventListener("click", function () {
+    if (!confirm("Erase ALL schools and start over? This can't be undone (unless you downloaded a file).")) return;
+    schools = [blankSchool()];
+    active = 0;
+    if (canStore) { try { window.localStorage.removeItem(STORAGE_KEY); } catch (e) {} }
+    renderAll();
+    flashStatus("Cleared");
+  });
+
+  function renderAll() {
+    renderTabs(); renderForm(); renderResults(); renderTable(); renderCompare();
+  }
+
+  // ---------- Init ----------
+  restore();
+  flashStatus(canStore ? "Auto-saving on this device as you type" : "Tip: use \u201CSave my numbers to a file\u201D to keep your work");
+  renderAll();
+})();
+</script>
+</body>
+</html>
