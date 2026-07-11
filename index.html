@@ -76,7 +76,7 @@
   /* ---------- View switch + save bar ---------- */
   .control-bar {
     display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-    justify-content: space-between; margin: 34px 0 14px;
+    justify-content: space-between; margin: 0;
   }
   .view-switch { display: inline-flex; border: 1px solid var(--ink); border-radius: 9px; overflow: hidden; }
   .view-switch button {
@@ -93,15 +93,22 @@
   .btn-primary:hover { background: #33456b; }
   .btn-ghost { background: transparent; color: var(--ink); }
   .btn-ghost:hover { background: #eaece6; }
-  .save-status { font-size: 12.5px; color: var(--ink-soft); width: 100%; text-align: right; }
-  @media (max-width: 700px) { .save-status { text-align: left; } }
-  .save-help {
-    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
-    padding: 0 16px; margin: 10px 0 0 auto; width: fit-content; max-width: 72ch;
+  .save-status { font-size: 12.5px; color: var(--ink-soft); }
+  .control-meta {
+    display: flex; justify-content: flex-end; align-items: baseline;
+    gap: 18px; flex-wrap: wrap; margin: 8px 0 24px;
   }
-  .save-help[open] { width: 100%; }
-  @media (max-width: 700px) { .save-help { margin-left: 0; } }
-  .save-help summary { cursor: pointer; font-weight: 600; font-size: 14px; padding: 11px 0; }
+  @media (max-width: 700px) { .control-meta { justify-content: flex-start; } }
+  .save-help { min-width: 0; }
+  .save-help summary {
+    cursor: pointer; font-weight: 600; font-size: 12.5px; color: var(--work);
+    text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px;
+  }
+  .save-help[open] {
+    width: 100%; background: var(--card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 0 16px; margin-top: 4px;
+  }
+  .save-help[open] summary { padding: 11px 0; text-decoration: none; font-size: 14px; color: var(--ink); }
   .save-help p { font-size: 13.5px; color: var(--ink-soft); padding: 0 0 12px; }
   .save-help p b { color: var(--ink); }
 
@@ -275,10 +282,11 @@
   .cost-table .money-input input { padding: 6px 10px 6px 22px; font-size: 14px; }
   .table-hint { font-size: 13px; color: var(--ink-soft); margin: 10px 2px 0; }
   .switch-note {
-    margin: 30px 0 -16px; font-size: 14.5px; color: var(--ink-soft);
-    max-width: 68ch; background: var(--card); border: 1px solid var(--line);
+    margin: 34px 0 14px; font-size: 14.5px; color: var(--ink-soft);
+    background: var(--card); border: 1px solid var(--line);
     border-left: 4px solid var(--hl); border-radius: 8px; padding: 12px 16px;
   }
+  .switch-note b { color: var(--ink); }
   .glossary a { color: var(--work); font-weight: 600; }
   .cost-table th.th-add { background: var(--ink); vertical-align: middle; }
   .btn-add-col {
@@ -385,18 +393,20 @@
       <button class="btn btn-ghost" id="btnLoad">Open a saved file</button>
       <input type="file" id="fileInput" accept=".json,application/json" hidden>
     </div>
-    <div class="save-status" id="saveStatus"></div>
   </div>
 
-  <details class="save-help">
-    <summary>How does saving work? Will my numbers still be here next time?</summary>
-    <div>
-      <p><b>On this device, saving is automatic.</b> As you type, this page remembers your numbers in your web browser. Close the page and come back next week — on the same device — and everything will still be here.</p>
-      <p><b>To keep a backup, or move your work to another device,</b> click <b>“Save my numbers to a file.”</b> A small file (it will be named something like <i>my-college-costs</i> and the date) goes to your Downloads folder. You don't need to open this file, and if you do, it will look like computer code — that's normal! It's not meant to be read. Just keep it somewhere safe, or email it to yourself or a parent.</p>
-      <p><b>To pick up where you left off,</b> come back to this page, click <b>“Open a saved file,”</b> and choose that file. All of your schools and numbers will reappear.</p>
-      <p><b>Using a school or library computer?</b> Shared computers sometimes erase what pages remember, so save your numbers to a file (and email it to yourself) before you leave.</p>
-    </div>
-  </details>
+  <div class="control-meta">
+    <span class="save-status" id="saveStatus"></span>
+    <details class="save-help">
+      <summary>How does saving work?</summary>
+      <div>
+        <p><b>On this device, saving is automatic.</b> As you type, this page remembers your numbers in your web browser. Close the page and come back next week — on the same device — and everything will still be here.</p>
+        <p><b>To keep a backup, or move your work to another device,</b> click <b>“Save my numbers to a file.”</b> A small file (it will be named something like <i>my-college-costs</i> and the date) goes to your Downloads folder. You don't need to open this file, and if you do, it will look like computer code — that's normal! It's not meant to be read. Just keep it somewhere safe, or email it to yourself or a parent.</p>
+        <p><b>To pick up where you left off,</b> come back to this page, click <b>“Open a saved file,”</b> and choose that file. All of your schools and numbers will reappear.</p>
+        <p><b>Using a school or library computer?</b> Shared computers sometimes erase what pages remember, so save your numbers to a file (and email it to yourself) before you leave.</p>
+      </div>
+    </details>
+  </div>
 
   <!-- Entry view -->
   <div id="entryView">
