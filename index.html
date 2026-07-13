@@ -354,11 +354,9 @@
     <h1>What will college <span class="hl-sweep">actually cost</span> your family, school by school?</h1>
     <p class="lede">
       Financial aid award letters can be confusing — every college structures theirs differently,
-      which makes them hard to compare. This worksheet helps families make a direct, school-by-school
-      comparison of aid and cost. It's also easy to adjust to reflect the aid the student actually
-      plans to accept. Maybe the student only wants to take out one federal loan instead of two —
-      that's fine! Just enter the aid the student plans on taking for each college, and the
-      calculator does the rest.
+      which can make them hard to compare. This worksheet breaks down every offer into a standardized view of costs and aid,
+      making it easy to directly compare schools. You can also adjust awards to reflect the aid the student actually intends to accept, 
+      giving you a more accurate estimate of what each college will really cost.
     </p>
 
     <div class="steps">
@@ -445,7 +443,7 @@
     <h2>What do these terms mean?</h2>
     <details><summary>Cost of Attendance (COA)</summary><p>This is the college's estimate of the cost of one academic year at their school, which includes tuition, housing (dorm), food (a meal plan), fees, books, travel, and personal expenses. It's the starting number for the college to build each student's financial aid award.</p></details>
     <details><summary>What determines how much your family can afford — and how much you'll pay?</summary><p>The information you provide on the FAFSA is used to determine your Student Aid Index (SAI), which will show up on your FAFSA account as a number. That number reflects what FAFSA determines your family can afford to pay for each year of college. A low SAI means your family's contribution will be relatively low; a higher SAI means a higher contribution.</p><p>All of the colleges the student has applied to will receive the student's SAI, and their financial aid offices use that number to determine how much need-based aid the student will receive. But not all financial aid awards will look the same, even though the student's SAI is constant. That's why it's important to compare the colleges' financial aid award letters!</p></details>
-    <details><summary>Direct vs. indirect costs</summary><p><b>Direct costs</b> are those the student pays directly to the college, including tuition, housing, meal plans, fees, and medical insurance if needed. Each college's direct costs are different.</p><p><b>Indirect costs</b> are those the student pays on their own, including books, school supplies, travel expenses, clothes, entertainment, and personal items like shampoo. College financial aid awards provide estimates for these costs, but use your best judgment. Some general examples:</p><p><b>Books and school supplies:</b> costs can range from $1,200–1,500 per year.</p><p><b>Travel:</b> this can be significantly impacted if air travel is required. Check flight costs to get an idea of what it will cost to go home during breaks or holidays. Otherwise, taking a bus, getting a ride and sharing gas costs, or taking a train can save money.</p><p><b>Personal expenses:</b> divide these into two categories. First, personal items such as shampoo, medication, a new winter coat or shoes. Next, spending money or an allowance for things like entertainment, pizza, snacks, and small gifts. For some students these costs could total $1,200 per year, or $600 per semester; for others, it could be more.</p></details>
+    <details><summary>Direct vs. indirect costs</summary><p><b>Direct costs</b> are those the student pays directly to the college, including tuition, housing, meal plans, fees, and medical insurance if needed. Each college's direct costs are different.</p><p><b>Indirect costs</b> are those the student pays on their own, including books, school supplies, travel expenses, clothes, entertainment, and personal items like shampoo. College financial aid awards provide estimates for these costs, but use your best judgment. Some general examples:</p><p><b>Books and school supplies:</b> costs tend to range from $1,200–1,500 per year.</p><p><b>Travel:</b> this can be significantly impacted if air travel is required. Check flight costs to get an idea of what it will cost to go home during breaks or holidays. Otherwise, taking a bus, getting a ride and sharing gas costs, or taking a train can save money.</p><p><b>Personal expenses:</b> divide these into two categories. First, personal items such as shampoo, medication, a new winter coat or shoes. Next, spending money or an allowance for things like entertainment, pizza, snacks, and small gifts.</p></details>
     <details><summary>Pell Grant</summary><p>This is free money from the Federal Government that helps pay for a student's cost of college attendance. The amount awarded is based on a student's financial need. The maximum Pell Grant is $7,395 (as of the 2026–27 school year) — check <a href="https://studentaid.gov/understand-aid/types/grants/pell" target="_blank" rel="noopener">studentaid.gov</a> for the current maximum. These funds can be provided to every eligible student.</p></details>
     <details><summary>SEOG Grant</summary><p>The Supplemental Educational Opportunity Grant is also free money from the Federal Government used to help pay for the cost of college attendance, with the amount based on a student's financial need. Not all schools have access to SEOG funding, so this award may not be granted by every school even if a student has high financial need. Also, each school's total SEOG funding is limited — once the school awards all of it, they can't give out any more that year. That's why applying for financial aid early matters: grants like this are essentially first come, first served, and students who file the FAFSA late may find the funds already gone. Awards can reach as high as $4,000 per year per student.</p></details>
     <details><summary>Grants &amp; scholarships from the school</summary><p>This is free money awarded by each college. Some is need-based and some is merit-based. Merit-based scholarships can include academic merit, athletic merit, and arts-related merit.</p></details>
@@ -477,7 +475,7 @@
         { id: "fees", label: "Required fees", hint: "Sometimes included in tuition — if so, leave as 0." },
         { id: "orientation", label: "Orientation fee" },
         { id: "housing", label: "Housing (dorm)", hint: "Award letters may show the least expensive option — check the cost of the housing you'd actually choose." },
-        { id: "food", label: "Food (meal plan)", hint: "The award may list a minimal plan (say, 2 meals a day, 6 days a week). Price the plan you'd actually use." }
+        { id: "food", label: "Food (meal plan)", hint: "The award may list a minimal plan. Price the plan you'd actually use." }
       ],
       subtotal: "Total direct costs", subKey: "direct"
     },
@@ -485,7 +483,7 @@
       id: "indirect", legend: "Indirect costs", badge: null,
       note: "Expenses that don't come from the college — things you'll need to pay for throughout the school year. Each college includes estimates, but use your best judgment. For example, if you'll need airfare to get home for holidays, research what flights cost and compare with the college's estimate. You may need to adjust.",
       fields: [
-        { id: "books", label: "Books, supplies, equipment", hint: "Estimated costs can run between $1,200\u20131,500 per year." },
+        { id: "books", label: "Books, supplies, equipment", hint: "Estimated costs tend to run between $1,200\u20131,500 per year." },
         { id: "transport", label: "Transportation", hint: "Trips home add up — flights cost more than driving." },
         { id: "personal", label: "Personal expenses", hint: "Think of this as your semester \u201Callowance\u201D — shampoo, laundry, pizza, or a new winter coat." }
       ],
@@ -493,7 +491,7 @@
     },
     {
       id: "insurance", legend: "Health insurance", badge: null,
-      note: "Colleges require coverage. If you stay on a family plan, you can often waive the school's plan — enter 0. But first check that your family plan works near campus: the student health center and local doctors may be out of network.",
+      note: "Colleges require coverage. If you stay on your family's plan, you can often waive the school's plan at no cost. But first check that your family plan works near campus: the student health center and local doctors may be out of network, which would mean much more expensive visits without the school's insurance plan.",
       fields: [
         { id: "healthIns", label: "School or family health plan" }
       ],
