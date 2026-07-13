@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>What Will College Really Cost? — Financial Aid Calculator</title>
+<title>Financial Aid Comparison Worksheet — What Will College Actually Cost?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -333,7 +333,7 @@
   @media print {
     body { background: #fff; font-size: 12px; }
     .tabs-bar, .toolbar, .btn-remove, .tab-add, .glossary, .steps, .legend,
-    .control-bar, .col-remove { display: none !important; }
+    .control-bar, .control-meta, .switch-note, .col-remove { display: none !important; }
     .main-grid { grid-template-columns: 1fr; }
     .results { border: 1px solid #999; position: static; }
     .grand .g-num { background: none; border: 2px solid #000; }
@@ -491,7 +491,7 @@
     },
     {
       id: "insurance", legend: "Health Insurance", badge: null,
-      note: "Colleges require coverage. If you stay on your family's plan, you can often waive the school's plan at no cost. But first check that your family plan works near campus: the student health center and local doctors may be out of network, which would mean much more expensive visits without the school's insurance plan.",
+      note: "Colleges require coverage. If you stay on your family's plan, you can often waive the school's plan at no cost. If you will choose to waive it, enter 0 here. But first check that your family plan works near campus: the student health center and local doctors may be out of network, which would mean much more expensive visits without the school's insurance plan.",
       fields: [
         { id: "healthIns", label: "School or family health plan" }
       ],
