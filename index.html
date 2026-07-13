@@ -448,7 +448,7 @@
     <details><summary>SEOG Grant</summary><p>The Supplemental Educational Opportunity Grant is also free money from the Federal Government used to help pay for the cost of college attendance, with the amount based on a student's financial need. Not all schools have access to SEOG funding, so this award may not be granted by every school even if a student has high financial need. Also, each school's total SEOG funding is limited — once the school awards all of it, they can't give out any more that year. That's why applying for financial aid early matters: grants like this are essentially first come, first served, and students who file the FAFSA late may find the funds already gone. Awards can reach as high as $4,000 per year per student.</p></details>
     <details><summary>Grants &amp; scholarships from the school</summary><p>This is free money awarded by each college. Some is need-based and some is merit-based. Merit-based scholarships can include academic merit, athletic merit, and arts-related merit.</p></details>
     <details><summary>Outside grants &amp; scholarships</summary><p>This is free money from such places as private foundations, funds, religious groups, and local organizations. It's important to note that such grants or scholarships are often for one year only. They may not necessarily be renewable, so it's important for the student to plan their finances accordingly.</p></details>
-    <details><summary>Subsidized vs. Unsubsidized Loans</summary><p><b>Subsidized Loan:</b> a loan to the student from the Federal Government, and often the best type of loan a student can receive. The main difference from an unsubsidized loan is that the government pays the interest on a subsidized loan while the student is in college. The student doesn't need to repay anything until 6 months after graduation, or if the student is enrolled less than half time.</p><p><b>Unsubsidized Loan:</b> also a loan from the Federal Government to the student, but the interest starts accruing when the student starts college — so it adds up over the full time the student is enrolled.</p><p>Learn more at studentaid.gov: <a href="https://studentaid.gov/understand-aid/types/loans/subsidized-unsubsidized" target="_blank" rel="noopener">interest rates and fees</a>, <a href="https://studentaid.gov/announcements-events/big-updates/definitions#loan-limits" target="_blank" rel="noopener">loan limits</a>, and <a href="https://studentaid.gov/manage-loans/repayment/plans" target="_blank" rel="noopener">repayment plans</a>.</p></details>
+    <details><summary>Subsidized vs. unsubsidized loans</summary><p><b>Subsidized Loan:</b> a loan to the student from the Federal Government, and often the best type of loan a student can receive. The main difference from an unsubsidized loan is that the government pays the interest on a subsidized loan while the student is in college. The student doesn't need to repay anything until 6 months after graduation, or if the student is enrolled less than half time.</p><p><b>Unsubsidized Loan:</b> also a loan from the Federal Government to the student, but the interest starts accruing when the student starts college — so it adds up over the full time the student is enrolled.</p><p>Learn more at studentaid.gov: <a href="https://studentaid.gov/understand-aid/types/loans/subsidized-unsubsidized" target="_blank" rel="noopener">interest rates and fees</a>, <a href="https://studentaid.gov/announcements-events/big-updates/definitions#loan-limits" target="_blank" rel="noopener">loan limits</a>, and <a href="https://studentaid.gov/manage-loans/repayment/plans" target="_blank" rel="noopener">repayment plans</a>.</p></details>
     <details><summary>Other loans</summary><p>Families sometimes consider outside loans, including bank loans, loans from a college, or another Federal loan such as Parent PLUS. Interest rates on such loans can be higher than what the Federal Government offers the student through their Subsidized or Unsubsidized Loans. Families should carefully evaluate how outside loans could impact their financial health and long-term plans, including retirement. As much as parents strive to help their children, they need to be mindful of their own financial well-being. It can be more helpful for parents to assist students with such things as personal expenses or interest payments on an unsubsidized loan instead of taking out a loan themselves.</p></details>
     <details><summary>Work-study</summary><p>Paid jobs are available on campus for students who are awarded work-study as part of their financial aid package. It's up to the student to secure a job by checking the school's student employment site and applying for jobs. If you're unsure how to go about this, speak with your college's financial aid office for guidance.</p></details>
     <details><summary>Student Aid Index (SAI)</summary><p>This is the number that appears on your FAFSA once it has been processed — the Federal Government's calculation, based on the information you provided, of what your family can afford to pay for each year of college. It's sent to every college the student lists on the FAFSA, and each school uses it to build their financial aid award. The SAI stays the same, but the award letters will all look different — which is why it's important to compare them!</p></details>
@@ -468,7 +468,7 @@
   // ---------- Field definitions (mirrors the counselor's spreadsheet) ----------
   var SECTIONS = [
     {
-      id: "direct", legend: "Direct costs", badge: null,
+      id: "direct", legend: "Direct Costs", badge: null,
       note: "Billed to you by the college. Find these on the school's cost-of-attendance page.",
       fields: [
         { id: "tuition", label: "Tuition" },
@@ -480,7 +480,7 @@
       subtotal: "Total direct costs", subKey: "direct"
     },
     {
-      id: "indirect", legend: "Indirect costs", badge: null,
+      id: "indirect", legend: "Indirect Costs", badge: null,
       note: "Expenses that don't come from the college — things you'll need to pay for throughout the school year. Each college includes estimates, but use your best judgment. For example, if you'll need airfare to get home for holidays, research what flights cost and compare with the college's estimate. You may need to adjust.",
       fields: [
         { id: "books", label: "Books, supplies, equipment", hint: "Estimated costs tend to run between $1,200\u20131,500 per year." },
@@ -490,7 +490,7 @@
       subtotal: "Total indirect costs", subKey: "indirect"
     },
     {
-      id: "insurance", legend: "Health insurance", badge: null,
+      id: "insurance", legend: "Health Insurance", badge: null,
       note: "Colleges require coverage. If you stay on your family's plan, you can often waive the school's plan at no cost. But first check that your family plan works near campus: the student health center and local doctors may be out of network, which would mean much more expensive visits without the school's insurance plan.",
       fields: [
         { id: "healthIns", label: "School or family health plan" }
@@ -498,7 +498,7 @@
       subtotal: "Total cost of attendance (COA)", subKey: "coa"
     },
     {
-      id: "gift", legend: "Grants & scholarships", badgeClass: "badge-grant", badge: "Free money", rowClass: "t-grant",
+      id: "gift", legend: "Grants & Scholarships", badgeClass: "badge-grant", badge: "Free money", rowClass: "t-grant",
       note: "Never repaid. Take every dollar offered.",
       fields: [
         { id: "pell", label: "Federal Pell Grant" },
@@ -520,7 +520,7 @@
       subtotal: "Total borrowed", subKey: "loans"
     },
     {
-      id: "work", legend: "Work-study", badgeClass: "badge-work", badge: "Must be earned", rowClass: "t-work",
+      id: "work", legend: "Work-Study", badgeClass: "badge-work", badge: "Must be earned", rowClass: "t-work",
       note: "Paid jobs are available on campus for students who are awarded work-study as part of their financial aid package. It's up to the student to secure a job by checking the school's student employment site and applying. If you're unsure how, speak with your college's financial aid office for guidance.",
       fields: [
         { id: "workStudy", label: "Work-study award" }
@@ -528,8 +528,8 @@
       subtotal: null
     },
     {
-      id: "family", legend: "What FAFSA says you can afford", badge: null,
-      note: "Your SAI (Student Aid Index) comes from your FAFSA results. It's the same number for every school.",
+      id: "family", legend: "Student Aid Index (SAI)", badge: null,
+      note: "This is what FAFSA says your family can afford. It's the same number for every school.",
       fields: [
         { id: "sai", label: "Your family's SAI" }
       ],
