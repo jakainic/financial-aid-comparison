@@ -158,8 +158,9 @@
   fieldset + fieldset { border-top: 1px solid var(--line); }
   legend {
     font-family: "Bitter", serif; font-weight: 700; font-size: 16px;
-    padding: 16px 0 2px; float: left; width: 100%;
-    color: var(--work);
+    float: left; width: calc(100% + 40px); color: #2a4d70;
+    background: var(--work-bg); margin: 12px -20px 4px;
+    padding: 9px 20px;
   }
   .fs-note { clear: both; font-size: 13.5px; color: var(--ink-soft); margin: 2px 0 10px; }
   .badge {
@@ -267,11 +268,11 @@
   }
   .col-remove:hover { color: #fff; }
   .t-section td {
-    background: var(--paper); font-family: "Bitter", serif; font-weight: 700;
+    background: var(--work-bg); font-family: "Bitter", serif; font-weight: 700;
     font-size: 13.5px; text-align: left; padding-top: 12px;
-    color: var(--work);
+    color: #2a4d70;
   }
-  .t-section td:first-child { background: var(--paper); }
+  .t-section td:first-child { background: var(--work-bg); }
   .t-sub td { font-weight: 700; border-top: 1px dashed var(--line); }
   .t-grant td { color: var(--grant); }
   .t-loan td { color: var(--loan); }
