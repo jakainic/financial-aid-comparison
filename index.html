@@ -333,6 +333,24 @@
   .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0 8px; }
   footer { padding: 34px 0 46px; color: var(--ink-soft); font-size: 13.5px; max-width: 72ch; }
 
+  /* ---------- Term tooltips ---------- */
+  .term-info {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 17px; height: 17px; margin-left: 6px; vertical-align: -2px;
+    border: 1px solid var(--work); border-radius: 50%; background: var(--work-bg);
+    color: var(--work); font-size: 11px; font-weight: 700;
+    font-family: "Public Sans", sans-serif; cursor: pointer; line-height: 1; padding: 0;
+  }
+  .term-info:hover, .term-info:focus-visible { background: var(--work); color: #fff; }
+  .term-tip {
+    position: absolute; z-index: 50; max-width: 300px; background: var(--ink); color: #fff;
+    font-size: 13px; line-height: 1.5; padding: 10px 12px; border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  .term-tip a { color: var(--hl); font-weight: 600; }
+  .glossary details.flash { border-color: var(--work); box-shadow: 0 0 0 2px var(--work-bg); }
+  @media print { .term-info, .term-tip { display: none !important; } }
+
   /* ---------- Print ---------- */
   @media print {
     body { background: #fff; font-size: 12px; }
@@ -961,8 +979,100 @@
     flashStatus("Cleared");
   });
 
+  // ---------- Term tooltips (hover on desktop, tap on mobile) ----------
+  var TERM_DEFS = {
+    pell: { match: "Federal Pell Grant", short: "Free money from the Federal Government, based on financial need. Never repaid.", glossary: "Pell Grant" },
+    seog: { match: "Federal SEOG Grant", short: "Extra federal free money for high-need students. Funds are limited \u2014 applying early matters. Never repaid.", glossary: "SEOG Grant" },
+    schoolGrant: { match: "Grants / scholarships from this school", short: "Free money from the college itself \u2014 need-based grants or merit scholarships. Never repaid.", glossary: "Grants & scholarships from the school" },
+    otherGrant: { match: "Other grants", short: "Free money from states, foundations, religious groups, or local organizations. Often for one year only.", glossary: "Outside grants & scholarships" },
+    subLoan: { match: "Federal Subsidized Loan", short: "A federal loan where the government pays the interest while you're in school. Must be repaid after you leave school.", glossary: "Subsidized vs. unsubsidized loans" },
+    unsubLoan: { match: "Federal Unsubsidized Loan", short: "A federal loan where interest starts adding up from day one. Must be repaid.", glossary: "Subsidized vs. unsubsidized loans" },
+    otherGovLoan: { match: "Other government loan", short: "Other government loans, like Parent PLUS. Interest rates can be higher than students' federal loans.", glossary: "Other loans" },
+    collegeLoan: { match: "Loan offered by the college", short: "A loan from the school itself. Compare its interest rate carefully against federal loans before accepting.", glossary: "Other loans" },
+    workStudy: { match: "Work-study award", short: "Money earned through a part-time campus job during the year. The student must apply for and keep the job.", glossary: "Work-study" },
+    sai: { match: "Your family's SAI", short: "The Student Aid Index: FAFSA's calculation of what your family can afford per year. It's the same number for every school.", glossary: "Student Aid Index (SAI)" }
+  };
+  var tipEl = null, tipFor = null, hoverTimer = null;
+  function closeTip() {
+    if (tipEl) { tipEl.remove(); tipEl = null; tipFor = null; }
+  }
+  function scheduleClose() { hoverTimer = setTimeout(closeTip, 300); }
+  function cancelClose() { clearTimeout(hoverTimer); }
+  function openTip(btn, key) {
+    closeTip(); cancelClose();
+    var d = TERM_DEFS[key];
+    tipEl = document.createElement("div");
+    tipEl.className = "term-tip";
+    tipEl.innerHTML = d.short + ' <a href="#">Full definition \u2193</a>';
+    document.body.appendChild(tipEl);
+    var r = btn.getBoundingClientRect();
+    tipEl.style.top = (r.bottom + window.scrollY + 6) + "px";
+    var left = r.left + window.scrollX - 10;
+    var maxLeft = window.scrollX + document.documentElement.clientWidth - tipEl.offsetWidth - 12;
+    tipEl.style.left = Math.max(8, Math.min(left, maxLeft)) + "px";
+    tipFor = btn;
+    tipEl.addEventListener("mouseenter", cancelClose);
+    tipEl.addEventListener("mouseleave", scheduleClose);
+    tipEl.querySelector("a").addEventListener("click", function (e) {
+      e.preventDefault();
+      gotoGlossary(d.glossary);
+      closeTip();
+    });
+  }
+  function gotoGlossary(summaryText) {
+    var all = document.querySelectorAll(".glossary details");
+    for (var i = 0; i < all.length; i++) {
+      var sum = all[i].querySelector("summary");
+      if (sum && sum.textContent.trim() === summaryText) {
+        all[i].open = true;
+        all[i].scrollIntoView({ behavior: "smooth", block: "center" });
+        all[i].classList.add("flash");
+        (function (el) { setTimeout(function () { el.classList.remove("flash"); }, 2200); })(all[i]);
+        return;
+      }
+    }
+  }
+  function makeInfoBtn(key) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "term-info";
+    b.textContent = "?";
+    b.setAttribute("aria-label", "What does this mean?");
+    b.addEventListener("click", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      if (tipFor === b) closeTip(); else openTip(b, key);
+    });
+    b.addEventListener("mouseenter", function () { cancelClose(); openTip(b, key); });
+    b.addEventListener("mouseleave", scheduleClose);
+    return b;
+  }
+  document.addEventListener("click", function (e) {
+    if (tipEl && !tipEl.contains(e.target) && e.target !== tipFor) closeTip();
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeTip(); });
+  window.addEventListener("scroll", closeTip, { passive: true });
+  function decorateTerms() {
+    Object.keys(TERM_DEFS).forEach(function (key) {
+      var lab = document.querySelector('label[for="f_' + key + '"]');
+      if (lab && !lab.querySelector(".term-info")) {
+        var hint = lab.querySelector(".hint");
+        if (hint) lab.insertBefore(makeInfoBtn(key), hint);
+        else lab.appendChild(makeInfoBtn(key));
+      }
+    });
+    document.querySelectorAll(".cost-table tbody td:first-child").forEach(function (td) {
+      if (td.querySelector(".term-info")) return;
+      var text = (td.childNodes[0] && td.childNodes[0].nodeValue ? td.childNodes[0].nodeValue : td.textContent).trim();
+      Object.keys(TERM_DEFS).forEach(function (key) {
+        if (TERM_DEFS[key].match === text) td.appendChild(makeInfoBtn(key));
+      });
+    });
+  }
+
   function renderAll() {
     renderTabs(); renderForm(); renderResults(); renderTable(); renderCompare();
+    decorateTerms();
+    closeTip();
   }
 
   // ---------- Init ----------
