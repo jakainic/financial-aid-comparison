@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Financial Aid Comparison Worksheet — What Will College Actually Cost?</title>
+<meta name="description" content="A free worksheet for comparing college financial aid award letters school by school. Enter each school's costs and aid, and see what your family would actually pay — built by a college counselor.">
+<meta property="og:title" content="Financial Aid Comparison Worksheet">
+<meta property="og:description" content="Compare financial aid award letters school by school and see what college will actually cost your family. Free, private, built by a college counselor.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -504,7 +510,7 @@
   var SECTIONS = [
     {
       id: "direct", legend: "Direct Costs", badge: null,
-      note: "Billed to you by the college. Find this information on the school’s financial aid award letter, often referred to as <i>cost of attendance.</i>",
+      note: "Billed to you by the college. Find this information (often referred to as <i>cost of attendance</i>) on the school’s financial aid award letter.",
       fields: [
         { id: "tuition", label: "Tuition" },
         { id: "fees", label: "Required fees", hint: "Sometimes included in tuition — if so, leave as 0." },
@@ -772,7 +778,7 @@
       row("Full cost of attendance", fmt(c.coa)) +
       row("Free money (grants &amp; scholarships)", "\u2212 " + fmt(c.gift), "r-grant") +
       row("Loans (must be repaid)", "\u2212 " + fmt(c.loans), "r-loan") +
-      row("Not covered by aid", fmt(c.notCovered), "strong") +
+      row("Cost not covered by aid", fmt(c.notCovered), "strong") +
       row("Work-study (must be earned)", "\u2212 " + fmt(c.work), "r-work");
 
     html += '<div class="grand"><div class="g-label">Your family would need to come up with</div>' +
@@ -916,7 +922,7 @@
         cLine("Loans", "\u2212 " + fmt(c.loans)) +
         cLine("Work-study", "\u2212 " + fmt(c.work)) +
         '<div class="c-big"><span>Family pays</span><span class="money">' + fmt(c.grand) + "</span></div>" +
-        '<div class="c-line"><span class="lbl">Gap vs. your SAI</span><span class="money" style="color:' + (c.gap > 0 ? "var(--danger)" : "var(--grant)") + '">' + (c.gap > 0 ? fmt(c.gap) : "None") + "</span></div>" +
+        '<div class="c-line"><span class="lbl">The gap (cost beyond your SAI)</span><span class="money" style="color:' + (c.gap > 0 ? "var(--danger)" : "var(--grant)") + '">' + (c.gap > 0 ? fmt(c.gap) : "None") + "</span></div>" +
         "</div>";
     }).join("");
     function cLine(lbl, val) {
