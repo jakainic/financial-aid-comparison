@@ -922,7 +922,7 @@
         cLine("Loans", "\u2212 " + fmt(c.loans)) +
         cLine("Work-study", "\u2212 " + fmt(c.work)) +
         '<div class="c-big"><span>Family pays</span><span class="money">' + fmt(c.grand) + "</span></div>" +
-        '<div class="c-line"><span class="lbl">The gap (cost beyond your SAI)</span><span class="money" style="color:' + (c.gap > 0 ? "var(--danger)" : "var(--grant)") + '">' + (c.gap > 0 ? fmt(c.gap) : "None") + "</span></div>" +
+        '<div class="c-line"><span class="lbl">The gap</span><span class="money" style="color:' + (c.gap > 0 ? "var(--danger)" : "var(--grant)") + '">' + (c.gap > 0 ? fmt(c.gap) : "None") + "</span></div>" +
         "</div>";
     }).join("");
     function cLine(lbl, val) {
