@@ -373,3 +373,5 @@
   .page-header .lede { font-size: 16px; margin-top: 4px; }
   .content-section { margin-top: 26px; }
   .content-section h2 { font-family: "Bitter", serif; font-size: 24px; margin-bottom: 12px; }
+
+  .site-nav .lang { margin-left: auto; color: var(--work); }
