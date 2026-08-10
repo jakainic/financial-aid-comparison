@@ -118,7 +118,7 @@
   <footer>
     <p>All numbers are per year. Use the figures from each college's financial aid award letter. Be sure to enter the information accurately; the calculator is only as effective as what you input. This worksheet can be used for planning and comparing costs, but students and families will ultimately need to weigh many factors when considering their college options.</p>
     <p style="margin-top:10px">Your numbers stay on your own device: this page saves them automatically in your browser as you type (nothing is sent anywhere), and “Save my numbers to a file” gives you a backup you can keep or open on another computer. See “How does saving work?” near the top of the page for details.</p>
-    <p style="margin-top:10px">©2026 Beth Kainic</p>
+    <p style="margin-top:10px">©2026 Beth Fisher Kainic</p>
   </footer>
 </div>
 
@@ -190,7 +190,7 @@
     },
     {
       id: "family", legend: "Student Aid Index (SAI)", badge: null,
-      note: "This FAFSA-generated number is used by colleges to determine how much need-based financial aid you will receive.",
+      note: null,
       fields: [
         { id: "sai", label: "Your family's SAI", hint: "If your FAFSA shows a negative SAI, it counts as 0 here." }
       ],
@@ -239,7 +239,7 @@
       if (!raw) return;
       var data = JSON.parse(raw);
       if (data && Array.isArray(data.schools) && data.schools.length) {
-        schools = data.schools.slice(0, 10).map(sanitizeSchool);
+        schools = data.schools.slice(0, 20).map(sanitizeSchool);
       }
     } catch (e) { /* corrupted data — start fresh */ }
   }
@@ -316,7 +316,7 @@
       b.addEventListener("click", function () { active = i; renderAll(); });
       bar.appendChild(b);
     });
-    if (schools.length < 10) {
+    if (schools.length < 20) {
       var add = document.createElement("button");
       add.className = "tab-add";
       add.textContent = "+ Add a school";
@@ -346,12 +346,18 @@
           '<input type="text" inputmode="decimal" id="f_' + f.id + '" data-field="' + f.id + '" value="' + esc(s[f.id]) + '" placeholder="0">' +
           "</div></div>";
       });
-      if (sec.subtotal) {
-        html += '<div class="subtotal-row"><span>' + sec.subtotal + '</span><span class="money" id="sub_' + sec.id + '"></span></div>';
-      } else {
+      if (sec.id === "insurance") {
         html += '<div style="clear:both;height:10px"></div>';
+        html += "</fieldset>";
+        html += '<div class="coa-band"><div class="coa-text"><span class="coa-label">' + sec.subtotal + '</span><span class="coa-sub">= direct costs + indirect costs + health insurance</span></div><span class="money" id="sub_insurance"></span></div>';
+      } else {
+        if (sec.subtotal) {
+          html += '<div class="subtotal-row"><span>' + sec.subtotal + '</span><span class="money" id="sub_' + sec.id + '"></span></div>';
+        } else {
+          html += '<div style="clear:both;height:10px"></div>';
+        }
+        html += "</fieldset>";
       }
-      html += "</fieldset>";
     });
     html += "</div>";
     host.innerHTML = html;
@@ -434,7 +440,7 @@
     var host = document.getElementById("tableHost");
     var n = schools.length;
 
-    var addCol = n < 8;
+    var addCol = n < 20;
     var emptyCell = addCol ? '<td class="td-empty"></td>' : "";
     var totalCols = n + 1 + (addCol ? 1 : 0);
 
@@ -457,7 +463,7 @@
         html += emptyCell + "</tr>";
       });
       if (sec.subtotal) {
-        html += '<tr class="t-sub ' + (sec.rowClass || "") + '"><td>' + sec.subtotal + "</td>";
+        html += '<tr class="' + (sec.id === "insurance" ? "t-sub t-coa" : "t-sub " + (sec.rowClass || "")) + '"><td>' + sec.subtotal + "</td>";
         schools.forEach(function (s, i) {
           html += '<td class="money" data-tsub="' + sec.subKey + '-' + i + '"></td>';
         });
@@ -577,7 +583,7 @@
       try {
         var data = JSON.parse(reader.result);
         if (data && Array.isArray(data.schools) && data.schools.length) {
-          schools = data.schools.slice(0, 10).map(sanitizeSchool);
+          schools = data.schools.slice(0, 20).map(sanitizeSchool);
           active = 0;
           changed(); renderAll();
           flashStatus("Loaded " + schools.length + " school" + (schools.length > 1 ? "s" : "") + " \u2713");
@@ -594,7 +600,7 @@
 
   // ---------- Add a school (shared by all views) ----------
   function addSchool() {
-    if (schools.length >= 10) { alert("You can compare up to 10 schools."); return; }
+    if (schools.length >= 20) { alert("You can compare up to 20 schools."); return; }
     schools.push(blankSchool());
     active = schools.length - 1;
     changed(); renderAll();
@@ -623,6 +629,8 @@
 
   // ---------- Term tooltips (hover on desktop, tap on mobile) ----------
   var TERM_DEFS = {
+    secDirect: { match: "Direct Costs", short: "Costs the student pays directly to the college \u2014 tuition, housing, meal plan, fees.", glossary: "direct-indirect" },
+    secIndirect: { match: "Indirect Costs", short: "Costs the student pays on their own \u2014 books, travel, personal items. The college never bills you for these, but they're real.", glossary: "direct-indirect" },
     pell: { match: "Federal Pell Grant", short: "Free money from the federal government, based on financial need. Never repaid.", glossary: "pell" },
     seog: { match: "Federal SEOG Grant", short: "Extra federal free money for high-need students. Funds are limited \u2014 applying early matters. Never repaid.", glossary: "seog" },
     schoolGrant: { match: "Grants / scholarships from this school", short: "Free money from the college itself \u2014 need-based grants or merit scholarships. Never repaid.", glossary: "school-grants" },
@@ -632,7 +640,7 @@
     otherGovLoan: { match: "Other government loan", short: "Other government loans, like Parent PLUS. Interest rates can be higher than the student's federal loans.", glossary: "other-loans" },
     collegeLoan: { match: "Loan offered by the college", short: "A loan from the school itself. Be sure to compare the terms against federal loans to determine your best options.", glossary: "other-loans" },
     workStudy: { match: "Work-study award", short: "Money earned through a part-time campus job during the year. The student must apply for and keep the job.", glossary: "work-study" },
-    sai: { match: "Your family's SAI", short: "The Student Aid Index: FAFSA's calculation of what your family can afford per year. It's the same number for every school.", glossary: "sai" }
+    sai: { match: "Your family's SAI", short: "A FAFSA-generated number that is used by colleges to determine how much need-based financial aid you are eligible for.", glossary: "sai" }
   };
   var tipEl = null, tipFor = null, hoverTimer = null;
   function closeTip() {
@@ -676,6 +684,13 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeTip(); });
   window.addEventListener("scroll", closeTip, { passive: true });
   function decorateTerms() {
+    document.querySelectorAll("#formHost legend").forEach(function (lg) {
+      if (lg.querySelector(".term-info")) return;
+      var text = (lg.childNodes[0] && lg.childNodes[0].nodeValue ? lg.childNodes[0].nodeValue : "").trim();
+      Object.keys(TERM_DEFS).forEach(function (key) {
+        if (TERM_DEFS[key].match === text) lg.appendChild(makeInfoBtn(key));
+      });
+    });
     Object.keys(TERM_DEFS).forEach(function (key) {
       var lab = document.querySelector('label[for="f_' + key + '"]');
       if (lab && !lab.querySelector(".term-info")) {

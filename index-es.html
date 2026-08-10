@@ -118,7 +118,7 @@
   <footer>
     <p>Todos los números son por año. Use las cifras de la carta de oferta de ayuda económica de cada universidad. Asegúrese de ingresar la información con precisión: la calculadora es tan buena como los datos que usted ingresa. Esta hoja de trabajo sirve para planificar y comparar costos, pero los estudiantes y las familias tendrán que sopesar muchos factores al considerar sus opciones universitarias.</p>
     <p style="margin-top:10px">Sus números permanecen en su propio dispositivo: esta página los guarda automáticamente en su navegador mientras escribe (no se envía nada a ningún lugar), y “Guardar mis números en un archivo” le da un respaldo que puede conservar o abrir en otra computadora. Vea “¿Cómo funciona el guardado?” cerca de la parte superior de la página para más detalles.</p>
-    <p style="margin-top:10px">©2026 Beth Kainic</p>
+    <p style="margin-top:10px">©2026 Beth Fisher Kainic</p>
   </footer>
 </div>
 
@@ -190,7 +190,7 @@
     },
     {
       id: "family", legend: "Índice de Ayuda Estudiantil (SAI)", badge: null,
-      note: "Este número, generado por la FAFSA, lo usan las universidades para determinar cuánta ayuda económica basada en la necesidad recibirá usted.",
+      note: null,
       fields: [
         { id: "sai", label: "El SAI de su familia", hint: "Si su FAFSA muestra un SAI negativo, aquí cuenta como 0." }
       ],
@@ -239,7 +239,7 @@
       if (!raw) return;
       var data = JSON.parse(raw);
       if (data && Array.isArray(data.schools) && data.schools.length) {
-        schools = data.schools.slice(0, 10).map(sanitizeSchool);
+        schools = data.schools.slice(0, 20).map(sanitizeSchool);
       }
     } catch (e) { /* corrupted data — start fresh */ }
   }
@@ -316,7 +316,7 @@
       b.addEventListener("click", function () { active = i; renderAll(); });
       bar.appendChild(b);
     });
-    if (schools.length < 10) {
+    if (schools.length < 20) {
       var add = document.createElement("button");
       add.className = "tab-add";
       add.textContent = "+ Agregar una escuela";
@@ -346,12 +346,18 @@
           '<input type="text" inputmode="decimal" id="f_' + f.id + '" data-field="' + f.id + '" value="' + esc(s[f.id]) + '" placeholder="0">' +
           "</div></div>";
       });
-      if (sec.subtotal) {
-        html += '<div class="subtotal-row"><span>' + sec.subtotal + '</span><span class="money" id="sub_' + sec.id + '"></span></div>';
-      } else {
+      if (sec.id === "insurance") {
         html += '<div style="clear:both;height:10px"></div>';
+        html += "</fieldset>";
+        html += '<div class="coa-band"><div class="coa-text"><span class="coa-label">' + sec.subtotal + '</span><span class="coa-sub">= costos directos + costos indirectos + seguro médico</span></div><span class="money" id="sub_insurance"></span></div>';
+      } else {
+        if (sec.subtotal) {
+          html += '<div class="subtotal-row"><span>' + sec.subtotal + '</span><span class="money" id="sub_' + sec.id + '"></span></div>';
+        } else {
+          html += '<div style="clear:both;height:10px"></div>';
+        }
+        html += "</fieldset>";
       }
-      html += "</fieldset>";
     });
     html += "</div>";
     host.innerHTML = html;
@@ -434,7 +440,7 @@
     var host = document.getElementById("tableHost");
     var n = schools.length;
 
-    var addCol = n < 8;
+    var addCol = n < 20;
     var emptyCell = addCol ? '<td class="td-empty"></td>' : "";
     var totalCols = n + 1 + (addCol ? 1 : 0);
 
@@ -457,7 +463,7 @@
         html += emptyCell + "</tr>";
       });
       if (sec.subtotal) {
-        html += '<tr class="t-sub ' + (sec.rowClass || "") + '"><td>' + sec.subtotal + "</td>";
+        html += '<tr class="' + (sec.id === "insurance" ? "t-sub t-coa" : "t-sub " + (sec.rowClass || "")) + '"><td>' + sec.subtotal + "</td>";
         schools.forEach(function (s, i) {
           html += '<td class="money" data-tsub="' + sec.subKey + '-' + i + '"></td>';
         });
@@ -577,7 +583,7 @@
       try {
         var data = JSON.parse(reader.result);
         if (data && Array.isArray(data.schools) && data.schools.length) {
-          schools = data.schools.slice(0, 10).map(sanitizeSchool);
+          schools = data.schools.slice(0, 20).map(sanitizeSchool);
           active = 0;
           changed(); renderAll();
           flashStatus("Archivo cargado: " + schools.length + " escuela" + (schools.length > 1 ? "s" : "") + " \u2713");
@@ -594,7 +600,7 @@
 
   // ---------- Add a school (shared by all views) ----------
   function addSchool() {
-    if (schools.length >= 10) { alert("Puede comparar hasta 10 escuelas."); return; }
+    if (schools.length >= 20) { alert("Puede comparar hasta 20 escuelas."); return; }
     schools.push(blankSchool());
     active = schools.length - 1;
     changed(); renderAll();
@@ -623,6 +629,8 @@
 
   // ---------- Term tooltips (hover on desktop, tap on mobile) ----------
   var TERM_DEFS = {
+    secDirect: { match: "Costos directos", short: "Costos que el estudiante paga directamente a la universidad \u2014 matrícula, vivienda, plan de comidas, cuotas.", glossary: "direct-indirect" },
+    secIndirect: { match: "Costos indirectos", short: "Costos que el estudiante paga por su cuenta \u2014 libros, viajes, artículos personales. La universidad nunca se los factura, pero son reales.", glossary: "direct-indirect" },
     pell: { match: "Beca Federal Pell", short: "Dinero gratuito del gobierno federal, según la necesidad económica. Nunca se devuelve.", glossary: "pell" },
     seog: { match: "Beca Federal SEOG", short: "Dinero federal gratuito adicional para estudiantes con alta necesidad. Los fondos son limitados \u2014 solicitar temprano importa. Nunca se devuelve.", glossary: "seog" },
     schoolGrant: { match: "Becas / subvenciones de esta escuela", short: "Dinero gratuito de la propia universidad: subvenciones por necesidad o becas por mérito. Nunca se devuelve.", glossary: "school-grants" },
@@ -632,7 +640,7 @@
     otherGovLoan: { match: "Otro préstamo del gobierno", short: "Otros préstamos del gobierno, como el PLUS para padres. Las tasas pueden ser más altas que las de los préstamos federales para estudiantes.", glossary: "other-loans" },
     collegeLoan: { match: "Préstamo ofrecido por la universidad", short: "Un préstamo de la propia escuela. Compare con cuidado su tasa de interés con la de los préstamos federales antes de aceptarlo.", glossary: "other-loans" },
     workStudy: { match: "Adjudicación de estudio y trabajo", short: "Dinero que se gana con un trabajo de medio tiempo en el campus durante el año. El estudiante debe solicitar el empleo y mantenerlo.", glossary: "work-study" },
-    sai: { match: "El SAI de su familia", short: "El Índice de Ayuda Estudiantil: el cálculo de la FAFSA de lo que su familia puede aportar por año. Es el mismo número para todas las escuelas.", glossary: "sai" }
+    sai: { match: "El SAI de su familia", short: "Un número generado por la FAFSA que las universidades usan para determinar cuánta ayuda económica basada en la necesidad puede recibir usted.", glossary: "sai" }
   };
   var tipEl = null, tipFor = null, hoverTimer = null;
   function closeTip() {
@@ -676,6 +684,13 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeTip(); });
   window.addEventListener("scroll", closeTip, { passive: true });
   function decorateTerms() {
+    document.querySelectorAll("#formHost legend").forEach(function (lg) {
+      if (lg.querySelector(".term-info")) return;
+      var text = (lg.childNodes[0] && lg.childNodes[0].nodeValue ? lg.childNodes[0].nodeValue : "").trim();
+      Object.keys(TERM_DEFS).forEach(function (key) {
+        if (TERM_DEFS[key].match === text) lg.appendChild(makeInfoBtn(key));
+      });
+    });
     Object.keys(TERM_DEFS).forEach(function (key) {
       var lab = document.querySelector('label[for="f_' + key + '"]');
       if (lab && !lab.querySelector(".term-info")) {
