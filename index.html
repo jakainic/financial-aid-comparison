@@ -188,7 +188,7 @@
       id: "family", legend: "Student Aid Index (SAI)", badge: null,
       note: "This is what FAFSA says your family can afford. It's the same number for every school.",
       fields: [
-        { id: "sai", label: "Your family's SAI" }
+        { id: "sai", label: "Your family's SAI", hint: "If your FAFSA shows a negative SAI, it counts as 0 here." }
       ],
       subtotal: null
     }
@@ -235,16 +235,16 @@
       if (!raw) return;
       var data = JSON.parse(raw);
       if (data && Array.isArray(data.schools) && data.schools.length) {
-        schools = data.schools.map(sanitizeSchool);
+        schools = data.schools.slice(0, 10).map(sanitizeSchool);
       }
     } catch (e) { /* corrupted data — start fresh */ }
   }
   function sanitizeSchool(obj) {
     var s = blankSchool();
     if (obj && typeof obj === "object") {
-      if (typeof obj.name === "string") s.name = obj.name;
+      if (typeof obj.name === "string") s.name = obj.name.slice(0,80);
       ALL_FIELDS.forEach(function (f) {
-        if (obj[f] !== undefined && obj[f] !== null) s[f] = String(obj[f]);
+        if (obj[f] !== undefined && obj[f] !== null) s[f] = String(obj[f]).slice(0,20);
       });
     }
     return s;
@@ -262,8 +262,9 @@
 
   // ---------- Helpers ----------
   function num(v) {
-    var n = parseFloat(String(v).replace(/[,$\s]/g, ""));
-    return isNaN(n) ? 0 : n;
+  var n = parseFloat(String(v).replace(/[,$\s]/g, ""));
+  if (isNaN(n) || n < 0) return 0;
+  return Math.min(n, 9999999);
   }
   function fmt(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
   function calc(s) {
@@ -365,6 +366,7 @@
     host.querySelectorAll("input[data-field]").forEach(function (inp) {
       inp.addEventListener("input", function (e) {
         schools[active][e.target.getAttribute("data-field")] = e.target.value;
+        checkInput(e.target);
         changed(); renderSubtotals(); renderResults(); renderCompare();
       });
     });
@@ -480,6 +482,7 @@
       inp.addEventListener("input", function (e) {
         var i = +e.target.getAttribute("data-tschool");
         schools[i][e.target.getAttribute("data-tfield")] = e.target.value;
+        checkInput(e.target);
         changed(); updateTableTotals(); renderCompare();
       });
     });
@@ -570,7 +573,7 @@
       try {
         var data = JSON.parse(reader.result);
         if (data && Array.isArray(data.schools) && data.schools.length) {
-          schools = data.schools.map(sanitizeSchool);
+          schools = data.schools.slice(0, 10).map(sanitizeSchool);
           active = 0;
           changed(); renderAll();
           flashStatus("Loaded " + schools.length + " school" + (schools.length > 1 ? "s" : "") + " \u2713");
@@ -587,7 +590,7 @@
 
   // ---------- Add a school (shared by all views) ----------
   function addSchool() {
-    if (schools.length >= 8) { alert("You can compare up to 8 schools."); return; }
+    if (schools.length >= 10) { alert("You can compare up to 10 schools."); return; }
     schools.push(blankSchool());
     active = schools.length - 1;
     changed(); renderAll();
@@ -684,6 +687,15 @@
         if (TERM_DEFS[key].match === text) td.appendChild(makeInfoBtn(key));
       });
     });
+  }
+
+  function checkInput(inp) {
+    var v = inp.value.trim();
+    if (!v) { inp.classList.remove("input-warn"); inp.title = ""; return; }
+    var n = parseFloat(v.replace(/[,$\s]/g, ""));
+    var bad = isNaN(n) || n < 0 || n > 9999999;
+    inp.classList.toggle("input-warn", bad);
+    inp.title = bad ? "This entry will count as " + (isNaN(n) || n < 0 ? "$0" : "$9,999,999") + " — enter a positive dollar amount." : "";
   }
 
   function renderAll() {
