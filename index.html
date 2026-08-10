@@ -135,7 +135,7 @@
         { id: "tuition", label: "Tuition" },
         { id: "fees", label: "Required fees", hint: "Sometimes included in tuition — if so, leave as 0." },
         { id: "orientation", label: "Orientation fee", hint: "May not appear or may be included elsewhere — if so, leave as 0."},
-        { id: "housing", label: "Housing (dorm)", hint: "Award letters may show the least expensive option — check the cost of the housing you'd actually choose. If commuting from home, this may be zero, but remember to factor in transport as an indirect cost." },
+        { id: "housing", label: "Housing (dorm)", hint: "Award letters may show the least expensive option — check the cost of the housing you'd actually choose. If commuting from home, this may be zero, but remember to factor in transportation as an indirect cost." },
         { id: "food", label: "Food (meal plan)", hint: "The award may list a minimal plan. Price the plan you'd actually use. If living off-campus, you might not choose a meal plan. This cost would then be zero, but remember to factor in food expenses as an indirect cost." }
       ],
       subtotal: "Total direct costs", subKey: "direct"
@@ -145,7 +145,7 @@
       note: "Expenses that don't come from the college — these are things you'll need to pay for throughout the school year. Each college includes estimates, but use your best judgment. For example, if you'll need airfare to get home for holidays, research what flights cost and compare with the college's estimate. You may need to adjust.",
       fields: [
         { id: "books", label: "Books, supplies, equipment", hint: "Estimated costs tend to run between $1,200\u20131,500 per year, but may be higher if you need a new computer or other special equipment." },
-        { id: "transport", label: "Transportation", hint: "Trips home over school breaks add up — flights cost more than driving. If living off campus, also factor in daily commute costs." },
+        { id: "transport", label: "Transportation", hint: "Trips home over school breaks add up — flights cost more than driving. If living off campus, also factor in daily commuting costs, car maintenance, and on-campus parking fees." },
         { id: "personal", label: "Personal expenses", hint: "Think of this as your \u201Callowance\u201D — shampoo, laundry, pizza, or a new winter coat. If you didn't purchase a meal plan, daily food will also need to be accounted for." }
       ],
       subtotal: "Total indirect costs", subKey: "indirect"
@@ -190,7 +190,7 @@
     },
     {
       id: "family", legend: "Student Aid Index (SAI)", badge: null,
-      note: "This is what FAFSA says your family can afford. It's the same number for every school.",
+      note: "This FAFSA generated number is used by colleges to determine how much need-based financial aid you will receive.",
       fields: [
         { id: "sai", label: "Your family's SAI", hint: "If your FAFSA shows a negative SAI, it counts as 0 here." }
       ],
