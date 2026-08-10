@@ -171,6 +171,7 @@
   .row label { font-size: 14.5px; font-weight: 500; }
   .hint { display: block; font-size: 12.5px; color: var(--ink-soft); font-weight: 400; }
   .money-input { position: relative; }
+  .money-input input.input-warn { border-color: var(--danger); background: #fdf0ef; }
   .money-input::before {
     content: "$"; position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
     color: var(--ink-soft); font-size: 14px; pointer-events: none;
