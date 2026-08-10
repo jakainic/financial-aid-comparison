@@ -135,7 +135,7 @@
         { id: "tuition", label: "Matrícula" },
         { id: "fees", label: "Cuotas obligatorias", hint: "A veces están incluidas en la matrícula — si es así, deje 0." },
         { id: "orientation", label: "Cuota de orientación", hint: "Puede no aparecer o estar incluida en otro rubro — si es así, deje 0."},
-        { id: "housing", label: "Vivienda (residencia estudiantil)", hint: "Las cartas de oferta pueden mostrar la opción más económica: verifique el costo de la vivienda que realmente elegiría. Si vivirá en casa de su familia, esto puede ser cero, pero recuerde incluir el transporte diario como costo indirecto." },
+        { id: "housing", label: "Vivienda (residencia estudiantil)", hint: "Las cartas de oferta pueden mostrar la opción más económica: verifique el costo de la vivienda que realmente elegiría. Si vivirá en casa de su familia, esto puede ser cero, pero recuerde incluir el transporte como costo indirecto." },
         { id: "food", label: "Alimentación (plan de comidas)", hint: "La oferta puede mostrar un plan mínimo. Calcule el plan que realmente usaría. Si vivirá fuera del campus, quizá no elija un plan de comidas; ese costo sería cero, pero recuerde incluir los gastos de comida como costo indirecto." }
       ],
       subtotal: "Total de costos directos", subKey: "direct"
@@ -145,7 +145,7 @@
       note: "Gastos que no vienen de la universidad: cosas que tendrá que pagar durante el año escolar. Cada universidad incluye estimaciones, pero use su propio criterio. Por ejemplo, si necesitará boletos de avión para volver a casa en los días festivos, investigue cuánto cuestan los vuelos y compárelo con la estimación de la universidad. Quizá tenga que ajustarla.",
       fields: [
         { id: "books", label: "Libros, útiles y equipo", hint: "Los costos estimados suelen estar entre $1,200 y $1,500 por año, pero pueden ser mayores si necesita una computadora nueva u otro equipo especial." },
-        { id: "transport", label: "Transporte", hint: "Los viajes a casa durante las vacaciones suman: volar cuesta más que manejar. Si vive fuera del campus, incluya también el costo del traslado diario." },
+        { id: "transport", label: "Transporte", hint: "Los viajes a casa durante las vacaciones suman: volar cuesta más que manejar. Si vive fuera del campus, incluya también los costos del traslado diario, el mantenimiento del auto y las tarifas de estacionamiento en el campus." },
         { id: "personal", label: "Gastos personales", hint: "Piense en esto como su \u201Cmesada\u201D: champú, lavandería, pizza o un abrigo de invierno nuevo. Si no compró un plan de comidas, también tendrá que contar la comida diaria." }
       ],
       subtotal: "Total de costos indirectos", subKey: "indirect"
@@ -190,7 +190,7 @@
     },
     {
       id: "family", legend: "Índice de Ayuda Estudiantil (SAI)", badge: null,
-      note: "Esto es lo que la FAFSA dice que su familia puede aportar. Es el mismo número para todas las escuelas.",
+      note: "Este número, generado por la FAFSA, lo usan las universidades para determinar cuánta ayuda económica basada en la necesidad recibirá usted.",
       fields: [
         { id: "sai", label: "El SAI de su familia", hint: "Si su FAFSA muestra un SAI negativo, aquí cuenta como 0." }
       ],
