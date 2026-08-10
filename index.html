@@ -13,372 +13,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ink: #22304a;
-    --ink-soft: #4d5a72;
-    --paper: #f4f6f2;
-    --card: #ffffff;
-    --line: #d9ded4;
-    --grant: #1e7a46;
-    --grant-bg: #e9f4ec;
-    --loan: #a05e12;
-    --loan-bg: #faf0e0;
-    --work: #35618e;
-    --work-bg: #e9f0f7;
-    --hl: #ffe14d;
-    --danger: #b3392f;
-    --radius: 10px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    * { transition: none !important; }
-  }
-  body {
-    font-family: "Public Sans", system-ui, sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-    line-height: 1.55;
-    font-size: 16px;
-  }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-  /* ---------- Header ---------- */
-  header { padding: 48px 0 36px; }
-  .eyebrow {
-    font-size: 16px; font-weight: 700; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--work);
-    display: inline-block; border-bottom: 3px solid var(--hl);
-    padding-bottom: 3px; margin-bottom: 2px;
-  }
-  h1 {
-    font-family: "Bitter", Georgia, serif;
-    font-weight: 800; font-size: clamp(30px, 5vw, 46px);
-    line-height: 1.12; margin: 10px 0 14px; max-width: 22ch;
-  }
-  h1 .hl-sweep {
-    background: linear-gradient(104deg, transparent 0.5%, var(--hl) 3%, var(--hl) 97%, transparent 99.5%);
-    padding: 0 6px; margin: 0 -2px;
-  }
-  .lede { max-width: 60ch; color: var(--ink-soft); font-size: 17px; }
-
-  .steps {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 12px; margin: 28px 0 8px;
-  }
-  .step {
-    background: var(--card); border: 1px solid var(--line);
-    border-radius: var(--radius); padding: 14px 16px; font-size: 14px;
-  }
-  .step b { display: block; font-family: "Bitter", serif; font-size: 15px; margin-bottom: 3px; }
-  .step-grant b { color: var(--grant); }
-  .step-loan b { color: var(--loan); }
-  .step-work b { color: var(--work); }
-
-  .legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 18px 0 0; font-size: 13.5px; font-weight: 600; }
-  .legend span { display: inline-flex; align-items: center; gap: 7px; }
-  .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-
-  /* ---------- View switch + save bar ---------- */
-  .control-bar {
-    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-    justify-content: space-between; margin: 0;
-  }
-  .view-switch { display: inline-flex; border: 1px solid var(--ink); border-radius: 9px; overflow: hidden; }
-  .view-switch button {
-    font-family: "Public Sans", sans-serif; font-weight: 700; font-size: 14px;
-    padding: 10px 16px; border: none; background: var(--card); color: var(--ink); cursor: pointer;
-  }
-  .view-switch button[aria-pressed="true"] { background: var(--ink); color: #fff; }
-  .save-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .btn {
-    font-family: "Public Sans", sans-serif; font-weight: 700; font-size: 14px;
-    border-radius: 8px; padding: 10px 16px; cursor: pointer; border: 1px solid var(--ink);
-  }
-  .btn-primary { background: var(--ink); color: #fff; }
-  .btn-primary:hover { background: #33456b; }
-  .btn-ghost { background: transparent; color: var(--ink); }
-  .btn-ghost:hover { background: #eaece6; }
-  .save-status { font-size: 12.5px; color: var(--ink-soft); }
-  .control-meta {
-    display: flex; justify-content: flex-end; align-items: baseline;
-    gap: 18px; flex-wrap: wrap; margin: 8px 0 24px;
-  }
-  @media (max-width: 700px) { .control-meta { justify-content: flex-start; } }
-  .save-help { min-width: 0; }
-  .save-help summary {
-    cursor: pointer; font-weight: 600; font-size: 12.5px; color: var(--work);
-    text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px;
-  }
-  .save-help[open] {
-    width: 100%; background: var(--card); border: 1px solid var(--line);
-    border-radius: 8px; padding: 0 16px; margin-top: 4px;
-  }
-  .save-help[open] summary { padding: 11px 0; text-decoration: none; font-size: 14px; color: var(--ink); }
-  .save-help p { font-size: 13.5px; color: var(--ink-soft); padding: 0 0 12px; }
-  .save-help p b { color: var(--ink); }
-
-  /* ---------- School tabs (entry view) ---------- */
-  .tabs-bar {
-    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-    margin: 6px 0 0; border-bottom: 2px solid var(--ink);
-  }
-  .tab {
-    font-family: "Public Sans", sans-serif; font-weight: 600; font-size: 14.5px;
-    background: var(--card); color: var(--ink-soft);
-    border: 1px solid var(--line); border-bottom: none;
-    border-radius: 8px 8px 0 0; padding: 9px 16px; cursor: pointer;
-    max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
-  .tab:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
-    outline: 3px solid var(--work); outline-offset: 2px;
-  }
-  .tab-add {
-    background: none; border: 1px dashed var(--ink-soft); border-radius: 8px 8px 0 0;
-    color: var(--work); font-weight: 700; font-size: 14.5px; padding: 9px 14px; cursor: pointer;
-  }
-  .tab-add:hover { background: var(--work-bg); }
-
-  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; margin-top: 22px; }
-  @media (max-width: 860px) { .main-grid { grid-template-columns: 1fr; } }
-
-  /* ---------- Entry form ---------- */
-  .school-form { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-  .school-name-row { padding: 18px 20px 4px; display: flex; gap: 10px; align-items: center; }
-  .school-name-row input {
-    flex: 1; font-family: "Bitter", serif; font-weight: 700; font-size: 20px;
-    border: none; border-bottom: 2px dashed var(--line); padding: 4px 2px;
-    color: var(--ink); background: transparent; min-width: 0;
-  }
-  .school-name-row input::placeholder { color: #a9b0a4; font-weight: 500; }
-  .btn-remove {
-    background: none; border: 1px solid var(--line); border-radius: 7px;
-    color: var(--danger); font-size: 13px; font-weight: 600; padding: 6px 10px; cursor: pointer;
-  }
-  .btn-remove:hover { background: #fbeeed; }
-
-  fieldset { border: none; padding: 16px 20px 6px; }
-  fieldset + fieldset { border-top: 1px solid var(--line); }
-  legend {
-    font-family: "Bitter", serif; font-weight: 700; font-size: 16px;
-    float: left; width: calc(100% + 40px); color: #2a4d70;
-    background: var(--work-bg); margin: 12px -20px 4px;
-    padding: 9px 20px;
-  }
-  .fs-note { clear: both; font-size: 13.5px; color: var(--ink-soft); margin: 2px 0 10px; }
-  .badge {
-    display: inline-block; font-size: 11.5px;
-    font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-    border-radius: 20px; padding: 2px 10px; vertical-align: 2px; margin-left: 8px;
-    font-family: "Public Sans", sans-serif;
-  }
-  .badge-grant { background: var(--grant); color: #fff; }
-  .badge-loan { background: var(--loan); color: #fff; }
-  .badge-work { background: var(--work); color: #fff; }
-
-  .row {
-    display: grid; grid-template-columns: 1fr 150px; gap: 12px;
-    align-items: center; padding: 7px 0; clear: both;
-  }
-  @media (max-width: 480px) { .row { grid-template-columns: 1fr 120px; } }
-  .row label { font-size: 14.5px; font-weight: 500; }
-  .hint { display: block; font-size: 12.5px; color: var(--ink-soft); font-weight: 400; }
-  .money-input { position: relative; }
-  .money-input::before {
-    content: "$"; position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-    color: var(--ink-soft); font-size: 14px; pointer-events: none;
-  }
-  .money-input input {
-    width: 100%; font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: 15px;
-    text-align: right; padding: 9px 12px 9px 24px;
-    border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: #fdfdfc;
-  }
-  .money-input input:focus { border-color: var(--work); }
-
-  .subtotal-row {
-    display: flex; justify-content: space-between; align-items: baseline;
-    border-top: 1px dashed var(--line); margin-top: 8px; padding: 10px 0 12px;
-    font-weight: 700; font-size: 14.5px; clear: both;
-  }
-  .money { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
-
-  /* ---------- Results panel ---------- */
-  .results {
-    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 20px; position: sticky; top: 16px;
-  }
-  @media (max-width: 860px) { .results { position: static; } }
-  .results h2 { font-family: "Bitter", serif; font-size: 18px; margin-bottom: 4px; }
-  .results .for-school { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 14px; }
-  .r-line { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; font-size: 14px; border-bottom: 1px solid #eff1ec; }
-  .r-line .lbl { color: var(--ink-soft); }
-  .r-line.strong { font-weight: 700; }
-  .r-line.strong .lbl { color: var(--ink); }
-  .r-grant .money { color: var(--grant); }
-  .r-loan .money { color: var(--loan); }
-  .r-work .money { color: var(--work); }
-
-  .grand { margin: 18px -6px 6px; padding: 14px 12px 12px; border-radius: 8px; }
-  .grand .g-label { font-size: 13.5px; font-weight: 600; color: var(--ink-soft); }
-  .grand .g-num {
-    font-family: "IBM Plex Mono", monospace; font-weight: 600;
-    font-size: 30px; line-height: 1.2; display: inline-block;
-    background: linear-gradient(104deg, transparent 1%, var(--hl) 4%, var(--hl) 96%, transparent 99%);
-    padding: 1px 10px; margin: 4px -4px 2px; transform: rotate(-0.6deg);
-  }
-  .grand .g-sub { font-size: 13px; color: var(--ink-soft); }
-  .gap-note {
-    margin-top: 12px; font-size: 13.5px; padding: 12px; border-radius: 8px;
-    background: var(--work-bg); border: 1px solid #cfdcea;
-  }
-  .gap-note.gap-bad { background: #fbeeed; border-color: #ecc9c5; }
-  .gap-note b { font-family: "IBM Plex Mono", monospace; }
-  .loan-note {
-    margin-top: 10px; font-size: 13px; padding: 10px 12px; border-radius: 8px;
-    background: var(--loan-bg); border: 1px solid #ecd9bb; color: #6e440f;
-  }
-
-  /* ---------- Side-by-side table view ---------- */
-  .table-scroller {
-    overflow-x: auto; background: var(--card);
-    border: 1px solid var(--line); border-radius: var(--radius);
-    -webkit-overflow-scrolling: touch;
-  }
-  .cost-table { border-collapse: collapse; width: 100%; min-width: 560px; }
-  .cost-table th, .cost-table td {
-    padding: 8px 12px; font-size: 14px; border-bottom: 1px solid #eff1ec;
-    text-align: right; vertical-align: middle; white-space: nowrap;
-  }
-  .cost-table th:first-child, .cost-table td:first-child {
-    text-align: left; position: sticky; left: 0; background: var(--card);
-    max-width: 240px; min-width: 180px; white-space: normal;
-    border-right: 1px solid var(--line); font-weight: 500; z-index: 2;
-  }
-  .cost-table thead th {
-    background: var(--ink); color: #fff; font-family: "Bitter", serif;
-    font-size: 14px; padding: 10px 12px; position: sticky; top: 0; z-index: 3;
-  }
-  .cost-table thead th:first-child { background: var(--ink); z-index: 4; }
-  .cost-table thead input {
-    font-family: "Bitter", serif; font-weight: 700; font-size: 14px;
-    background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.5);
-    color: #fff; width: 130px; text-align: right; padding: 2px;
-  }
-  .cost-table thead input::placeholder { color: rgba(255,255,255,0.6); }
-  .col-remove {
-    display: block; margin-left: auto; margin-top: 4px; background: none; border: none;
-    color: rgba(255,255,255,0.75); font-size: 11px; cursor: pointer; text-decoration: underline;
-  }
-  .col-remove:hover { color: #fff; }
-  .t-section td {
-    background: var(--work-bg); font-family: "Bitter", serif; font-weight: 700;
-    font-size: 13.5px; text-align: left; padding-top: 12px;
-    color: #2a4d70;
-  }
-  .t-section td:first-child { background: var(--work-bg); }
-  .t-sub td { font-weight: 700; border-top: 1px dashed var(--line); }
-  .t-grant td { color: var(--grant); }
-  .t-loan td { color: var(--loan); }
-  .t-work td { color: var(--work); }
-  .t-grand td {
-    font-weight: 700; font-size: 15px; background: #fffbe6; border-top: 2px solid var(--ink);
-    border-bottom: 2px solid var(--ink);
-  }
-  .t-grand td:first-child { background: #fffbe6; }
-  .t-gap td { font-weight: 700; }
-  .cost-table .money-input { display: inline-block; width: 120px; }
-  .cost-table .money-input input { padding: 6px 10px 6px 22px; font-size: 14px; }
-  .table-hint { font-size: 13px; color: var(--ink-soft); margin: 10px 2px 0; }
-  .switch-note {
-    margin: 34px 0 14px; font-size: 14.5px; color: var(--ink-soft);
-    background: var(--card); border: 1px solid var(--line);
-    border-left: 4px solid var(--hl); border-radius: 8px; padding: 12px 16px;
-  }
-  .switch-note b { color: var(--ink); }
-  .glossary a { color: var(--work); font-weight: 600; }
-  .cost-table th.th-add { background: var(--ink); vertical-align: middle; }
-  .btn-add-col {
-    font-family: "Public Sans", sans-serif; font-weight: 700; font-size: 13px;
-    background: transparent; color: #fff; border: 1px dashed rgba(255,255,255,0.65);
-    border-radius: 7px; padding: 7px 12px; cursor: pointer; white-space: nowrap;
-  }
-  .btn-add-col:hover { background: rgba(255,255,255,0.15); }
-  .cost-table td.td-empty { background: #fafbf8; border-left: 1px dashed var(--line); }
-
-  /* ---------- Comparison cards ---------- */
-  .compare-section { margin-top: 44px; }
-  .compare-section h2 { font-family: "Bitter", serif; font-size: 26px; margin-bottom: 6px; }
-  .compare-sub { color: var(--ink-soft); font-size: 15px; margin-bottom: 18px; max-width: 62ch; }
-  .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-  .c-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
-  .c-card.best { border: 2px solid var(--grant); }
-  .c-card .c-rank {
-    font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-    color: var(--grant); margin-bottom: 2px; min-height: 16px;
-  }
-  .c-card h3 { font-family: "Bitter", serif; font-size: 17px; margin-bottom: 10px; }
-  .c-card .c-line { display: flex; justify-content: space-between; font-size: 13.5px; padding: 4px 0; }
-  .c-card .c-line .lbl { color: var(--ink-soft); }
-  .c-card .c-big {
-    border-top: 1px dashed var(--line); margin-top: 8px; padding-top: 9px;
-    font-weight: 700; font-size: 15px; display: flex; justify-content: space-between;
-  }
-
-  /* ---------- Glossary ---------- */
-  .glossary { margin-top: 48px; }
-  .glossary h2 { font-family: "Bitter", serif; font-size: 26px; margin-bottom: 14px; }
-  .glossary details {
-    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
-    margin-bottom: 8px; padding: 0 16px;
-  }
-  .glossary summary { cursor: pointer; font-weight: 600; font-size: 15px; padding: 12px 0; }
-  .glossary details p { padding: 0 0 14px; font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
-  .glossary details ul { margin: 0 0 14px 22px; font-size: 14.5px; color: var(--ink-soft); max-width: 68ch; }
-  .glossary details li { margin-bottom: 6px; }
-
-  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0 8px; }
-  footer { padding: 34px 0 46px; color: var(--ink-soft); font-size: 13.5px; max-width: 72ch; }
-
-  /* ---------- Term tooltips ---------- */
-  .term-info {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 17px; height: 17px; margin-left: 6px; vertical-align: -2px;
-    border: 1px solid var(--work); border-radius: 50%; background: var(--work-bg);
-    color: var(--work); font-size: 11px; font-weight: 700;
-    font-family: "Public Sans", sans-serif; cursor: pointer; line-height: 1; padding: 0;
-  }
-  .term-info:hover, .term-info:focus-visible { background: var(--work); color: #fff; }
-  .term-tip {
-    position: absolute; z-index: 50; max-width: 300px; background: var(--ink); color: #fff;
-    font-size: 13px; line-height: 1.5; padding: 10px 12px; border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-  }
-  .term-tip a { color: var(--hl); font-weight: 600; }
-  .glossary details.flash { border-color: var(--work); box-shadow: 0 0 0 2px var(--work-bg); }
-  @media print { .term-info, .term-tip { display: none !important; } }
-
-  /* ---------- Print ---------- */
-  @media print {
-    body { background: #fff; font-size: 12px; }
-    .tabs-bar, .toolbar, .btn-remove, .tab-add, .glossary, .steps, .legend,
-    .control-bar, .control-meta, .switch-note, .col-remove { display: none !important; }
-    .main-grid { grid-template-columns: 1fr; }
-    .results { border: 1px solid #999; position: static; }
-    .grand .g-num { background: none; border: 2px solid #000; }
-    header { padding: 10px 0; }
-    .table-scroller { overflow: visible; border: none; }
-    .cost-table th, .cost-table td { white-space: normal; }
-    .cost-table thead th { background: #fff !important; color: #000; border-bottom: 2px solid #000; }
-    .cost-table thead input { color: #000; border: none; }
-    a[href]::after { content: ""; }
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="wrap">
+  <nav class="site-nav" aria-label="Site">
+    <a href="index.html" class="active">Calculator</a>
+    <a href="terms.html">Key Terms</a>
+    <a href="tips.html">Tips &amp; Resources</a>
+  </nav>
 
   <header>
     <div class="eyebrow">Financial Aid Comparison Worksheet</div>
@@ -395,7 +38,7 @@
     <div class="steps">
       <div class="step"><b>1 · Add the costs</b>There are two types. <b style="display:inline;font-family:inherit;font-size:inherit">Direct costs</b> are paid to the college — tuition, housing, meal plan, fees. <b style="display:inline;font-family:inherit;font-size:inherit">Indirect costs</b> are ones you pay on your own — books, travel, clothes, shampoo. Use the numbers on each college's award letter.</div>
       <div class="step step-grant"><b>2 · Subtract free money</b>Grants and scholarships never need to be paid back. Grants are usually based on financial need; scholarships are often based on merit. This is the best kind of aid!</div>
-      <div class="step step-loan"><b>3 · Subtract loans</b>Taking out a loan is borrowing money. It needs to be paid back, with interest. See the descriptions of each kind of loan at the bottom of this page.</div>
+      <div class="step step-loan"><b>3 · Subtract loans</b>Taking out a loan is borrowing money. It needs to be paid back, with interest. See the descriptions of each kind of loan on the <a href="terms.html#subsidized-unsubsidized" style="color:var(--work);font-weight:600">Key Terms</a> page.</div>
       <div class="step step-work"><b>4 · Find the bottom line</b>This is what each school expects your family to pay for each year of college. Compare it with what FAFSA says your family can afford — there's often a gap between the two.</div>
     </div>
 
@@ -468,34 +111,6 @@
     <div class="compare-grid" id="compareGrid"></div>
   </section>
 
-  <section class="glossary">
-    <h2>What do these terms mean?</h2>
-    <details><summary>Cost of Attendance (COA)</summary><p>This is the college's estimate of the cost of one academic year at their school, which includes tuition, housing (dorm), food (a meal plan), fees, books, travel, and personal expenses. It's the starting number for the college to build each student's financial aid award.</p></details>
-    <details><summary>What determines how much your family can afford — and how much you'll pay?</summary><p>The information you provide on the FAFSA determines your Student Aid Index (SAI), which will appear in your FAFSA account as a number. The SAI is an eligibility index: it’s the number colleges start from when figuring out your need-based aid. The lower your SAI, the more need-based aid you should be eligible to receive each year of college. You can think of it, roughly, as the government's measure of what your family can afford to contribute.</p><p>When you fill out the FAFSA, be sure to list every college you're applying to, because that's how each school receives your SAI. Each college's financial aid office then uses that number to build your financial aid award. However, even though your SAI is the same everywhere, the award letters will not all look the same. That's why it's important to compare them!</p></details>
-    <details><summary>Direct vs. indirect costs</summary><p><b>Direct costs</b> are those the student pays directly to the college, including tuition, housing, meal plans, fees, and medical insurance if needed. Each college's direct costs are different.</p><p><b>Indirect costs</b> are those the student pays on their own, including books, school supplies, travel expenses, clothes, entertainment, and personal items like shampoo. College financial aid awards provide estimates for these costs, but use your best judgment. Some general examples:</p><p><b>Books and school supplies:</b> costs tend to range from $1,200–1,500 per year, but this can vary. For example, a new computer will add to general costs. If your intended major requires special equipment or gear, those items will cost extra. </p><p><b>Travel:</b> this can be significantly impacted if air travel is required. Check flight costs to get an idea of what it will cost to go home during breaks or holidays. Otherwise, taking a bus, getting a ride and sharing gas costs, or taking a train can save money.</p><p><b>Personal expenses:</b> divide these into two categories. First, personal items such as shampoo, medication, a new winter coat or shoes. Next, spending money or an allowance for things like entertainment, pizza, snacks, and small gifts.</p></details>
-    <details><summary>Pell Grant</summary><p>This is free money from the Federal Government that helps pay for a student's cost of college attendance. The amount awarded is based on a student's financial need. The maximum Pell Grant is $7,395 (as of the 2026–27 school year) — check <a href="https://studentaid.gov/understand-aid/types/grants/pell" target="_blank" rel="noopener">studentaid.gov</a> for the current maximum. These funds can be provided to every eligible student.</p></details>
-    <details><summary>SEOG Grant</summary><p>The Supplemental Educational Opportunity Grant is also free money from the Federal Government used to help pay for the cost of college attendance, with the amount based on a student's financial need. Not all schools have access to SEOG funding, so this award may not be granted by every school even if a student has high financial need. Also, each school's total SEOG funding is limited — once the school awards all of it, they can't give out any more that year. That's why applying for financial aid early matters: grants like this are essentially first come, first served, and students who file the FAFSA late may find the funds already gone. Awards can reach as high as $4,000 per year per student. Learn more at <a href="https://studentaid.gov/understand-aid/types/grants/fseog" target="_blank" rel="noopener">studentaid.gov</a>.</p></details>
-    <details><summary>Grants &amp; scholarships from the school</summary><p>This is free money awarded by each college. Some is need-based and some is merit-based. Merit-based scholarships can include academic merit, athletic merit, and arts-related merit.</p></details>
-    <details><summary>Outside grants &amp; scholarships</summary><p>This is free money from such places as private foundations, funds, religious groups, and local organizations. It's important to note that such grants or scholarships are often for one year only. They may not necessarily be renewable, so it's important for the student to plan their finances accordingly.</p></details>
-    <details><summary>Subsidized vs. unsubsidized loans</summary><p><b>Subsidized Loan:</b> a loan to the student from the Federal Government, and often the best type of loan a student can receive. The main difference from an unsubsidized loan is that the government pays the interest on a subsidized loan while the student is in college. Loan repayment begins six months after the student graduates, leaves school, or drops below half-time enrollment.</p><p><b>Unsubsidized Loan:</b> also a loan from the Federal Government to the student, but the interest starts accruing when the student starts college — so it adds up over the full time the student is enrolled.</p><p>Learn more at studentaid.gov: <a href="https://studentaid.gov/understand-aid/types/loans/subsidized-unsubsidized" target="_blank" rel="noopener">interest rates and fees</a>, <a href="https://studentaid.gov/announcements-events/big-updates/definitions#loan-limits" target="_blank" rel="noopener">loan limits</a>, and <a href="https://studentaid.gov/manage-loans/repayment/plans" target="_blank" rel="noopener">repayment plans</a>.</p></details>
-    <details><summary>Other loans</summary><p>Families sometimes consider outside loans, including bank loans, or other federal loans such as Parent PLUS. Interest rates on such loans are usually higher than what the federal government offers the student through their subsidized or unsubsidized loans. Also, colleges sometimes offer loans directly from their school to the student. Occasionally the rates for such loans are more favorable, but sometimes not. The student can always contact a school’s financial aid office if they have questions about the terms of such loans.</p><p>Families should carefully evaluate how outside loans could impact their financial health and long-term plans, including retirement. As much as parents strive to help their children, they need to be mindful of their own financial well-being. It can be more helpful for parents to assist students with such things as personal expenses or interest payments on an unsubsidized loan instead of taking out a loan themselves.</p></details>
-    <details><summary>Work-study</summary><p>Paid jobs are available on campus for students who are awarded work-study as part of their financial aid package. It's up to the student to secure a job by checking the school's student employment site and applying for jobs. If you're unsure how to go about this, speak with your college's financial aid office for guidance.</p></details>
-    <details><summary>Student Aid Index (SAI)</summary><p>This is the number that appears on your FAFSA once it has been processed — the Federal Government's calculation, based on the information you provided, of what your family can afford to pay for each year of college. It's sent to every college the student lists on the FAFSA, and each school uses it to build their financial aid award. The SAI stays the same, but the award letters will all look different — which is why it's important to compare them!</p></details>
-    <details><summary>The "gap"</summary><p>This is the difference between the SAI (what the government says your family can pay for each year of college) and what the college asks you to pay. For example, say a family has an SAI of $2,000 — the government has calculated that this family can afford $2,000 each year toward their student's college education. One school's financial aid award says the student must pay $7,500 per year, and another says $3,500. The first school "gapped" the student $5,500 per year ($7,500 − $2,000) and the second school gapped the student $1,500 per year ($3,500 − $2,000). You want to look for the smallest gaps when comparing awards!</p></details>
-  </section>
-
-  <section class="glossary">
-    <h2>Other Resources</h2>
-    <details><summary>Finding scholarships</summary><p>Some of the best scholarships will come from colleges themselves. These usually show up on your financial aid award, but also check each college's website for additional scholarship information. The nice thing about scholarships from colleges is that they are normally renewable for all four years of undergraduate study, provided you maintain certain conditions, such as full-time student status and a minimum GPA.</p><p>Check local sources for scholarships, too, including:</p><ul><li>Community organizations, such as a Rotary club or religious group</li><li>Employers — including companies where your parents work</li></ul><p>And research scholarships online. A few good places to search:</p><ul><li><a href="https://www.scholarships.com/" target="_blank" rel="noopener">Scholarships.com</a></li><li><a href="https://www.fastweb.com/" target="_blank" rel="noopener">Fastweb</a></li><li><a href="https://bigfuture.collegeboard.org/scholarship-search" target="_blank" rel="noopener">College Board BigFuture Scholarship Search</a></li><li><a href="https://scholarships360.org/" target="_blank" rel="noopener">Scholarships360</a></li><li><a href="https://www.hsf.net/scholarship" target="_blank" rel="noopener">Hispanic Scholarship Fund</a></li></ul></details>
-    <details><summary>Watch out for scholarship scams</summary><p>Warning signs:</p><ul><li>You should never pay to apply for a scholarship.</li><li>You should not need to provide sensitive information such as a Social Security number or ID information.</li><li>You should never be asked for banking, Venmo, PayPal, or similar account information.</li></ul></details>
-    <details><summary>One-year vs. renewable scholarships</summary><p>Understand whether a scholarship is for one year or can be renewed. Don't discount the value of a one-year scholarship — it can help fill a gap — but you'll need to find a way to cover that amount in your other years of college.</p><p>Renewable scholarships are great because the funds will be available for each year of college, provided you maintain certain conditions.</p></details>
-    <details><summary>Short videos and guides on financial aid</summary><ul><li><a href="https://www.youtube.com/user/FederalStudentAid/videos" target="_blank" rel="noopener">The Federal Student Aid YouTube channel</a> — lots of short, official videos</li><li><a href="https://www.youtube.com/watch?v=RtDYpEfAa5U" target="_blank" rel="noopener">Why complete the FAFSA?</a> (video)</li><li><a href="https://bigfuture.collegeboard.org/pay-for-college/get-help-paying-for-college/how-does-financial-aid-work" target="_blank" rel="noopener">College Board: how financial aid works and ways to help pay for college</a></li></ul></details>
-    <details><summary>Divorced or separated parents? Reporting parental information on the FAFSA</summary><p>If you're unsure about how to report parental information on the FAFSA because of your family structure (divorce, separation, or other circumstances), these official guides explain exactly whose information to include:</p><ul><li><a href="https://studentaid.gov/apply-for-aid/fafsa/filling-out/parent-info" target="_blank" rel="noopener">Reporting parent information on the FAFSA</a></li><li><a href="https://studentaid.gov/fafsa-apply/parents" target="_blank" rel="noopener">FAFSA information for parents</a></li></ul></details>
-    <details><summary>Deadlines — apply early!</summary><p>To be eligible for the best financial aid award, applying as early as possible makes a real difference. Certain funding can run out if you apply late.</p><ul><li>Each year's new FAFSA usually goes "live" online on or around October 1. For example, a student starting college in the Fall of 2027 would complete the FAFSA that goes live around October 1, 2026.</li><li>Check <a href="https://studentaid.gov/h/apply-for-aid/fafsa" target="_blank" rel="noopener">the FAFSA deadlines for your state</a> — but don't wait until that deadline. Get your application in as early as possible.</li><li>You'll need to complete the FAFSA for <b>every year</b> of college. Look for each year's new application at the beginning of October so you'll have the best aid for the following academic year.</li></ul></details>
-    <details><summary>The CSS Profile (for some selective colleges)</summary><p>Students applying to more selective colleges may need to submit a second financial aid application: the <a href="https://cssprofile.collegeboard.org/" target="_blank" rel="noopener">CSS Profile</a>. Check each of your colleges' websites to see whether it's required — and don't complete this application unless you're required to do so.</p></details>
-    <details><summary>Think about how your college list affects financial aid</summary><ul><li>If you're considering four-year institutions, try to have a mix of state or public schools and some private ones. This will give you a greater variety of financial aid award options.</li><li>Consider schools where you may "outmatch" the college's average accepted profile. If your classes are a bit more competitive, your grades a bit higher, and/or your standardized test scores a bit above a school's accepted average, you may see them offer additional scholarship money.</li><li>If you know you want to major in a specific discipline, some majors offer their own scholarships. Use the scholarship search engines above to narrow the field.</li></ul></details>
-  </section>
-
   <footer>
     <p>All numbers are per year. Use the figures from each college's financial aid award letter. Be sure to enter the information accurately; the calculator is only as effective as what you input. This worksheet can be used for planning and comparing costs, but students and families will ultimately need to weigh many factors when considering their college options.</p>
     <p style="margin-top:10px">Your numbers stay on your own device: this page saves them automatically in your browser as you type (nothing is sent anywhere), and “Save my numbers to a file” gives you a backup you can keep or open on another computer. See “How does saving work?” near the top of the page for details.</p>
@@ -552,7 +167,7 @@
     },
     {
       id: "loans", legend: "Loans", badgeClass: "badge-loan", badge: "Must be repaid", rowClass: "t-loan",
-      note: "Loans may lower your bottom line for now, but they need to be repaid — with interest. See the loan descriptions at the bottom of this page.",
+      note: "Loans may lower your bottom line for now, but they need to be repaid — with interest. See the loan descriptions on the <a href='terms.html#subsidized-unsubsidized'>Key Terms</a> page.",
       fields: [
         { id: "subLoan", label: "Federal Subsidized Loan" },
         { id: "unsubLoan", label: "Federal Unsubsidized Loan" },
@@ -1001,16 +616,16 @@
 
   // ---------- Term tooltips (hover on desktop, tap on mobile) ----------
   var TERM_DEFS = {
-    pell: { match: "Federal Pell Grant", short: "Free money from the Federal Government, based on financial need. Never repaid.", glossary: "Pell Grant" },
-    seog: { match: "Federal SEOG Grant", short: "Extra federal free money for high-need students. Funds are limited \u2014 applying early matters. Never repaid.", glossary: "SEOG Grant" },
-    schoolGrant: { match: "Grants / scholarships from this school", short: "Free money from the college itself \u2014 need-based grants or merit scholarships. Never repaid.", glossary: "Grants & scholarships from the school" },
-    otherGrant: { match: "Other grants", short: "Free money from states, foundations, religious groups, or local organizations. Often for one year only.", glossary: "Outside grants & scholarships" },
-    subLoan: { match: "Federal Subsidized Loan", short: "A federal loan where the government pays the interest while you're in school. Must be repaid.", glossary: "Subsidized vs. unsubsidized loans" },
-    unsubLoan: { match: "Federal Unsubsidized Loan", short: "A federal loan where interest starts adding up from day one. Must be repaid.", glossary: "Subsidized vs. unsubsidized loans" },
-    otherGovLoan: { match: "Other government loan", short: "Other government loans, like Parent PLUS. Interest rates can be higher than the student's federal loans.", glossary: "Other loans" },
-    collegeLoan: { match: "Loan offered by the college", short: "A loan from the school itself. Be sure to compare the terms against federal loans to determine your best options.", glossary: "Other loans" },
-    workStudy: { match: "Work-study award", short: "Money earned through a part-time campus job during the year. The student must apply for and keep the job.", glossary: "Work-study" },
-    sai: { match: "Your family's SAI", short: "The Student Aid Index: FAFSA's calculation of what your family can afford per year. It's the same number for every school.", glossary: "Student Aid Index (SAI)" }
+    pell: { match: "Federal Pell Grant", short: "Free money from the Federal Government, based on financial need. Never repaid.", glossary: "pell" },
+    seog: { match: "Federal SEOG Grant", short: "Extra federal free money for high-need students. Funds are limited \u2014 applying early matters. Never repaid.", glossary: "seog" },
+    schoolGrant: { match: "Grants / scholarships from this school", short: "Free money from the college itself \u2014 need-based grants or merit scholarships. Never repaid.", glossary: "school-grants" },
+    otherGrant: { match: "Other grants", short: "Free money from states, foundations, religious groups, or local organizations. Often for one year only.", glossary: "outside-grants" },
+    subLoan: { match: "Federal Subsidized Loan", short: "A federal loan where the government pays the interest while you're in school. Must be repaid.", glossary: "subsidized-unsubsidized" },
+    unsubLoan: { match: "Federal Unsubsidized Loan", short: "A federal loan where interest starts adding up from day one. Must be repaid.", glossary: "subsidized-unsubsidized" },
+    otherGovLoan: { match: "Other government loan", short: "Other government loans, like Parent PLUS. Interest rates can be higher than the student's federal loans.", glossary: "other-loans" },
+    collegeLoan: { match: "Loan offered by the college", short: "A loan from the school itself. Be sure to compare the terms against federal loans to determine your best options.", glossary: "other-loans" },
+    workStudy: { match: "Work-study award", short: "Money earned through a part-time campus job during the year. The student must apply for and keep the job.", glossary: "work-study" },
+    sai: { match: "Your family's SAI", short: "The Student Aid Index: FAFSA's calculation of what your family can afford per year. It's the same number for every school.", glossary: "sai" }
   };
   var tipEl = null, tipFor = null, hoverTimer = null;
   function closeTip() {
@@ -1023,7 +638,7 @@
     var d = TERM_DEFS[key];
     tipEl = document.createElement("div");
     tipEl.className = "term-tip";
-    tipEl.innerHTML = d.short + ' <a href="#">Full definition \u2193</a>';
+    tipEl.innerHTML = d.short + ' <a href="terms.html#' + d.glossary + '">Full definition \u2192</a>';
     document.body.appendChild(tipEl);
     var r = btn.getBoundingClientRect();
     tipEl.style.top = (r.bottom + window.scrollY + 6) + "px";
@@ -1033,24 +648,6 @@
     tipFor = btn;
     tipEl.addEventListener("mouseenter", cancelClose);
     tipEl.addEventListener("mouseleave", scheduleClose);
-    tipEl.querySelector("a").addEventListener("click", function (e) {
-      e.preventDefault();
-      gotoGlossary(d.glossary);
-      closeTip();
-    });
-  }
-  function gotoGlossary(summaryText) {
-    var all = document.querySelectorAll(".glossary details");
-    for (var i = 0; i < all.length; i++) {
-      var sum = all[i].querySelector("summary");
-      if (sum && sum.textContent.trim() === summaryText) {
-        all[i].open = true;
-        all[i].scrollIntoView({ behavior: "smooth", block: "center" });
-        all[i].classList.add("flash");
-        (function (el) { setTimeout(function () { el.classList.remove("flash"); }, 2200); })(all[i]);
-        return;
-      }
-    }
   }
   function makeInfoBtn(key) {
     var b = document.createElement("button");
