@@ -43,7 +43,7 @@
       <div class="step"><b>1 · Add the costs</b>There are two types. <b style="display:inline;font-family:inherit;font-size:inherit">Direct costs</b> are paid to the college — tuition, housing, meal plan, fees. <b style="display:inline;font-family:inherit;font-size:inherit">Indirect costs</b> are ones you pay on your own — books, travel, clothes, shampoo. Use the numbers on each college's award letter.</div>
       <div class="step step-grant"><b>2 · Subtract free money</b>Grants and scholarships never need to be paid back. Grants are usually based on financial need; scholarships are often based on merit. This is the best kind of aid!</div>
       <div class="step step-loan"><b>3 · Subtract loans</b>Taking out a loan is borrowing money. It needs to be paid back, with interest. See the descriptions of each kind of loan on the <a href="terms.html#subsidized-unsubsidized" style="color:var(--work);font-weight:600">Key Terms</a> page.</div>
-      <div class="step step-work"><b>4 · Find the bottom line</b>This is what each school expects your family to pay for each year of college. Compare it with what FAFSA says your family can afford — there's often a gap between the two.</div>
+      <div class="step step-work"><b>4 · Find the bottom line</b>This is what each school expects your family to pay for each year of college. Compare it with your family's SAI from the FAFSA — there's often a gap between the two.</div>
     </div>
 
     <div class="legend" aria-hidden="true">
@@ -417,9 +417,9 @@
       if (c.sai > 0 || !gapGood) {
         html += '<div class="gap-note ' + (gapGood ? "" : "gap-bad") + '">';
         if (gapGood) {
-          html += "Good news: this is at or below your family\u2019s SAI of <b>" + fmt(c.sai) + "</b>. According to FAFSA, this school is within what your family can afford.";
+          html += "Good news: what this school asks is at or below your family\u2019s SAI of <b>" + fmt(c.sai) + "</b> \u2014 the benchmark from your FAFSA.";
         } else {
-          html += "FAFSA says your family can afford <b>" + fmt(c.sai) + "</b> \u2014 so there\u2019s a <b>" + fmt(c.gap) + "</b> gap this school isn\u2019t covering. That gap would need outside scholarships, extra earnings, or private loans. It\u2019s also a fair reason to appeal your aid award.";
+          html += "Your family\u2019s SAI is <b>" + fmt(c.sai) + "</b> \u2014 so this school is asking <b>" + fmt(c.gap) + "</b> more than that benchmark. That gap would need outside scholarships, extra earnings, or private loans. It\u2019s also a fair reason to appeal your aid award.";
         }
         html += "</div>";
       }

@@ -43,7 +43,7 @@
       <div class="step"><b>1 · Sume los costos</b>Hay dos tipos. <b style="display:inline;font-family:inherit;font-size:inherit">Los costos directos</b> se pagan a la universidad: matrícula, vivienda, plan de comidas, cuotas. <b style="display:inline;font-family:inherit;font-size:inherit">Los costos indirectos</b> son los que usted paga por su cuenta: libros, viajes, ropa, champú. Use los números de la carta de oferta de cada universidad.</div>
       <div class="step step-grant"><b>2 · Reste el dinero gratuito</b>Las becas y subvenciones nunca tienen que devolverse. Las subvenciones suelen basarse en la necesidad económica; las becas, a menudo en el mérito. ¡Es el mejor tipo de ayuda!</div>
       <div class="step step-loan"><b>3 · Reste los préstamos</b>Pedir un préstamo es pedir dinero prestado. Hay que devolverlo, con intereses. Vea la descripción de cada tipo de préstamo en la página de <a href="terms-es.html#subsidized-unsubsidized" style="color:var(--work);font-weight:600">Términos clave</a>.</div>
-      <div class="step step-work"><b>4 · Encuentre el resultado final</b>Esto es lo que cada escuela espera que su familia pague por cada año de universidad. Compárelo con lo que la FAFSA dice que su familia puede aportar: a menudo hay una brecha entre los dos.</div>
+      <div class="step step-work"><b>4 · Encuentre el resultado final</b>Esto es lo que cada escuela espera que su familia pague por cada año de universidad. Compárelo con el SAI de su familia según la FAFSA: a menudo hay una brecha entre los dos.</div>
     </div>
 
     <div class="legend" aria-hidden="true">
@@ -417,9 +417,9 @@
       if (c.sai > 0 || !gapGood) {
         html += '<div class="gap-note ' + (gapGood ? "" : "gap-bad") + '">';
         if (gapGood) {
-          html += "Buenas noticias: esto está en o por debajo del SAI de su familia de <b>" + fmt(c.sai) + "</b>. Según la FAFSA, esta escuela está dentro de lo que su familia puede pagar.";
+          html += "Buenas noticias: lo que esta escuela pide está en o por debajo del SAI de su familia de <b>" + fmt(c.sai) + "</b> \u2014 el número de referencia de su FAFSA.";
         } else {
-          html += "La FAFSA dice que su familia puede aportar <b>" + fmt(c.sai) + "</b> \u2014 así que hay una brecha de <b>" + fmt(c.gap) + "</b> que esta escuela no está cubriendo. Esa brecha requeriría becas externas, ingresos adicionales o préstamos privados. También es una razón válida para apelar su oferta de ayuda.";
+          html += "El SAI de su familia es <b>" + fmt(c.sai) + "</b> \u2014 así que esta escuela pide <b>" + fmt(c.gap) + "</b> más que ese número de referencia. Esa brecha requeriría becas externas, ingresos adicionales o préstamos privados. También es una razón válida para apelar su oferta de ayuda.";
         }
         html += "</div>";
       }
