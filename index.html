@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Financial Aid Comparison Worksheet — What Will College Actually Cost?</title>
+<link rel="canonical" href="https://jakainic.github.io/financial-aid-comparison/index.html">
 <link rel="alternate" hreflang="en" href="https://jakainic.github.io/financial-aid-comparison/index.html">
 <link rel="alternate" hreflang="es" href="https://jakainic.github.io/financial-aid-comparison/index-es.html">
 <link rel="alternate" hreflang="x-default" href="https://jakainic.github.io/financial-aid-comparison/index.html">
@@ -118,6 +119,8 @@
   <footer>
     <p>All numbers are per year. Use the figures from each college's financial aid award letter. Be sure to enter the information accurately; the calculator is only as effective as what you input. This worksheet can be used for planning and comparing costs, but students and families will ultimately need to weigh many factors when considering their college options.</p>
     <p style="margin-top:10px">Your numbers stay on your own device: this page saves them automatically in your browser as you type (nothing is sent anywhere), and “Save my numbers to a file” gives you a backup you can keep or open on another computer. See “How does saving work?” near the top of the page for details.</p>
+        <p style="margin-top:10px"><b>A safety note:</b> This worksheet will never ask for your name, Social Security number, bank account, or card information — it has no forms for them. If a page that looks like this one asks for any of that, it is not ours: close it and don't enter anything.</p>
+    <p class="fine-print">This worksheet is a free educational tool for planning and comparison only. It is not financial, legal, or tax advice, and it is not affiliated with the U.S. Department of Education, the FAFSA, or any college or university. All results are estimates based on the numbers you enter; actual costs and aid are determined solely by each college. Always confirm figures with a school's financial aid office before making enrollment or borrowing decisions.</p>
     <p style="margin-top:10px">©2026 Beth Fisher Kainic</p>
   </footer>
 </div>
@@ -409,7 +412,7 @@
       row("Cost not covered by aid", fmt(c.notCovered), "strong") +
       row("Work-study (must be earned)", "\u2212 " + fmt(c.work), "r-work");
 
-    html += '<div class="grand"><div class="g-label">Your family would need to come up with</div>' +
+    html += '<div class="grand"><div class="g-label">Our estimate of what your family would need to come up with</div>' +
       '<div class="g-num">' + fmt(c.grand) + '</div>' +
       '<div class="g-sub">per year, after all aid \u2014 the number to compare between schools</div></div>';
 

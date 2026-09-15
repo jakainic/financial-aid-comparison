@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hoja de Comparación de Ayuda Económica — ¿Cuánto Costará Realmente la Universidad?</title>
+<link rel="canonical" href="https://jakainic.github.io/financial-aid-comparison/index-es.html">
 <link rel="alternate" hreflang="en" href="https://jakainic.github.io/financial-aid-comparison/index.html">
 <link rel="alternate" hreflang="es" href="https://jakainic.github.io/financial-aid-comparison/index-es.html">
 <link rel="alternate" hreflang="x-default" href="https://jakainic.github.io/financial-aid-comparison/index.html">
@@ -118,6 +119,8 @@
   <footer>
     <p>Todos los números son por año. Use las cifras de la carta de oferta de ayuda económica de cada universidad. Asegúrese de ingresar la información con precisión: la calculadora es tan buena como los datos que usted ingresa. Esta hoja de trabajo sirve para planificar y comparar costos, pero los estudiantes y las familias tendrán que sopesar muchos factores al considerar sus opciones universitarias.</p>
     <p style="margin-top:10px">Sus números permanecen en su propio dispositivo: esta página los guarda automáticamente en su navegador mientras escribe (no se envía nada a ningún lugar), y “Guardar mis números en un archivo” le da un respaldo que puede conservar o abrir en otra computadora. Vea “¿Cómo funciona el guardado?” cerca de la parte superior de la página para más detalles.</p>
+        <p style="margin-top:10px"><b>Una nota de seguridad:</b> Esta hoja de trabajo nunca le pedirá su nombre, número de Seguro Social, cuenta bancaria ni información de tarjetas — no tiene formularios para eso. Si una página que se parece a esta le pide algo de eso, no es la nuestra: ciérrela y no ingrese nada.</p>
+    <p class="fine-print">Esta hoja de trabajo es una herramienta educativa gratuita, solo para planificar y comparar. No es asesoría financiera, legal ni fiscal, y no está afiliada al Departamento de Educación de los EE. UU., a la FAFSA ni a ninguna universidad. Todos los resultados son estimaciones basadas en los números que usted ingresa; los costos y la ayuda reales los determina únicamente cada universidad. Confirme siempre las cifras con la oficina de ayuda económica de la escuela antes de tomar decisiones de inscripción o de préstamos.</p>
     <p style="margin-top:10px">©2026 Beth Fisher Kainic</p>
   </footer>
 </div>
@@ -409,7 +412,7 @@
       row("Costo no cubierto por la ayuda", fmt(c.notCovered), "strong") +
       row("Estudio y trabajo (debe ganarse)", "\u2212 " + fmt(c.work), "r-work");
 
-    html += '<div class="grand"><div class="g-label">Su familia tendría que aportar</div>' +
+    html += '<div class="grand"><div class="g-label">Nuestra estimación de lo que su familia tendría que aportar</div>' +
       '<div class="g-num">' + fmt(c.grand) + '</div>' +
       '<div class="g-sub">por año, después de toda la ayuda \u2014 el número para comparar entre escuelas</div></div>';
 
